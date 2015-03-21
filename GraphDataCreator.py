@@ -102,7 +102,7 @@ if __name__ == "__main__":
                 print help()
 
     # Checking existance of Repository; we need it!
-    if os.path.exists("~/Repository"):
+    if os.path.exists("Repository"):
         print "Please, remove directory 'Repository' before starting"
         raise SystemExit
 
