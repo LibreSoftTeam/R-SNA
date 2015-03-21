@@ -100,7 +100,12 @@ if __name__ == "__main__":
                 print "Verbose mode on"
             elif value == 'h':
                 print help()
-    
+
+    # Checking existance of Repository; we need it!
+    if os.path.exists("~/Repository"):
+        print "Please, remove directory 'Repository' before starting"
+        raise SystemExit
+
     # Checking from and until dates
     if check_date(from_date):
         print "Valid starting date: " + from_date
