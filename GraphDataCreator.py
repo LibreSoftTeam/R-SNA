@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: iso-8859-15 -*-
 """
-GraphDataCreator Shell(bash)-to-Pyhton translation from Christian Coré Ramiro code
+GraphDataCreator Shell(bash)-to-Pyhton translation from Christian Ramiro code
 Miguel Angel Fernandez Sanchez
 """
 
@@ -12,6 +12,7 @@ from time import strftime, gmtime
 print " - Graph Data Creator Started - "
 print " - MAKE SURE CTAGS, PERL AND GIT ARE INSTALLED IN YOUR COMPUTER\r\n"
 
+
 def help():
     """
         Prints usage & description
@@ -21,7 +22,7 @@ def help():
     line += "EXAMPLE\r\n\r\n"
     line += "./GraphDataCreator.sh -f 2010-1-1 -t 2011-1-1 -r "
     line += "git://git.openstack.org/openstack/swift -v\r\n\r\n"
-    
+
     line += "DESCRIPTION\r\n\r\n"
     line += "GraphDataCreator.sh reads information of a Git repository and"
     line += " outputs two\n.csv files ready to be read to represent"
@@ -47,6 +48,7 @@ def help():
     line += "DataFiles.csv-File using relantionship-in-file approach\r\n"
     return line
 
+
 def check_date(date):
     """
     Checks if a date has format 'YYYY-MM-DD'
@@ -60,6 +62,7 @@ def check_date(date):
                 if (int(date_fields[2]) > 0) and (int(date_fields[2]) < 32):
                     ans = 1
     return ans
+
 
 class GraphData:
 
@@ -120,44 +123,3 @@ if __name__ == "__main__":
         print "Ending date is wrong. "
         print "Please use option -h for further information"
         raise SystemExit
-    
-        
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
-
-
