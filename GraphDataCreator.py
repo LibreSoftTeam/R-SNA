@@ -83,6 +83,7 @@ if __name__ == "__main__":
     if unamestr != 'Linux':
         print "We are not under Linux, no options available"
         raise SystemExit
+
     url_repo = ""
 
     # Check introduced paramenters
@@ -123,3 +124,41 @@ if __name__ == "__main__":
         print "Ending date is wrong. "
         print "Please use option -h for further information"
         raise SystemExit
+
+    if url_repo != "":
+        print "Starting download of Repository"
+        to_exe = "git clone " + url_repo + " Repository"
+        os.system(to_exe)
+        dwnl_error = False
+        if not dwnl_error:
+            print "Repository downloaded succesfully"
+		    os.system("cd Repository")
+        else:
+            print "Error downloading Repository"
+            raise SystemExit
+
+
+    if not os.path.exists(".git"):
+        print "No Git repository found."
+        print "Please use option -h for further information."
+        raise SystemExit
+
+    # First: git clone: project as a parameter
+    # -------- git clone url folder-name ----------------
+
+    git_log = "git log --all --since=" + str(from_date) + " --until="
+    git_log += str(until_date) + "--pretty=format:"%H &an" > "
+    git_log += "./archivoDeCommitsDesdeScript.txt"
+    os.system(git_log)
+
+    if os.path.exists("archivoDeCommitsDesdeScript.txt"):
+        print "File of commits created succesfully"
+    else:
+        print "File of commits empty."
+        print "Please use option -h for further information"
+    
+    # Now we read the first line of the file with the commit revs
+    
+    
+        
+
