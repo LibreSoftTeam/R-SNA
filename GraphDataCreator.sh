@@ -241,9 +241,11 @@ fi
 echo "Reading first line and checking out from first commit"
 read -r startline<./archivoDeCommitsDesdeScript.txt
 revline=$(echo "$startline" | awk '{print $1}')
+# Deberia coger el segundo parámetro en vez del primero
+# ¿Por qué coge la palabra 'commit' en vez del identificador?
 log "First line: $revline"
 
-git checkout -f $revline
+git checkout -f $revline 
 
 # ctags out of Linux
 unamestr=`uname`
