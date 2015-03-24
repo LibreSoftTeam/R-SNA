@@ -66,15 +66,17 @@ def check_date(date):
 
 class GraphData:
 
-    def log(self, verbose):
+    def log(self, verbose, log_line):
+        str_out = ""
         if verbose:
-            print "Verbose mode"
-            #os.system('echo "$@"')
+            str_out = str(log_line) + "\r\n"
+        return str_out
 
 
 if __name__ == "__main__":
     my_graph = GraphData()
-
+    commits_file = 'archivoDeCommitsDesdeScript.txt'
+    
     # Initialising options
     verbose = False
     from_date = '1971-1-1'
@@ -132,7 +134,8 @@ if __name__ == "__main__":
         dwnl_error = False
         if not dwnl_error:
             print "Repository downloaded succesfully"
-		    os.system("cd Repository")
+            os.chdir("Repository")
+            os.system("pwd")
         else:
             print "Error downloading Repository"
             raise SystemExit
@@ -146,19 +149,27 @@ if __name__ == "__main__":
     # First: git clone: project as a parameter
     # -------- git clone url folder-name ----------------
 
-    git_log = "git log --all --since=" + str(from_date) + " --until="
-    git_log += str(until_date) + "--pretty=format:"%H &an" > "
-    git_log += "./archivoDeCommitsDesdeScript.txt"
+    git_log = 'git log --all --since=' + str(from_date) + ' --until='
+    git_log += str(until_date) + '--pretty=format:"%H &an" > '
+    git_log += commits_file
     os.system(git_log)
 
-    if os.path.exists("archivoDeCommitsDesdeScript.txt"):
+    if os.path.exists(commits_file):
         print "File of commits created succesfully"
     else:
         print "File of commits empty."
         print "Please use option -h for further information"
     
     # Now we read the first line of the file with the commit revs
-    
-    
-        
 
+    print "Reading first line and checking out from first commit"
+
+    fich = open(commits_file, 'r')
+    start_line = fich.readlines()[0]
+    fich.close()
+    print my_graph.log(verbose, start_line)
+
+    to_exe = 'git checkout -f ' + start_line
+    
+
+    
