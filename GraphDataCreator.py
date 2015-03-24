@@ -165,13 +165,25 @@ if __name__ == "__main__":
     print "Reading first line and checking out from first commit"
 
     fich = open(commits_file, 'r')
-    start_line = fich.readlines()[0]
+    start_line = fich.readlines()[1]
     fich.close()
-    print my_graph.log(verbose, start_line)
+    print my_graph.log(verbose, "First line: " + start_line)
 
     to_exe = 'git checkout -f ' + start_line
     
+        
+    print  "Creating tags file: tags"
+    # Do this if ctags does not exist, otherwise just update it
+    # Getting rid of annoying warning output
+    os.system('ctags -w -R -n . >> 2&>1')
+    os.system('> outputFile.txt')
     
+    fich_tags = open('tags', 'r') # ¿Abro fichero correcto?
+    tag_lines = fich_tags.readlines()
+    for line in tag_lines:
+        new_line = '-NEW LINE ' + line
+        print my_graph.log(verbose, new_line)
+        # Unfinished
     
 
     
