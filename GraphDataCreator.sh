@@ -77,7 +77,7 @@ function findFittingTag()
   if [ -z "${matches}" ]
   then
     # In this case the output has three fields (no tag)
-    log “Adding file tag”
+    log "Adding file tag"
     echo "$3,$1,$4" >> outputFile.txt
 
   else
@@ -268,7 +268,7 @@ do
   # Get file and line of change
   # and then get tag, we have to update
   
-  log “- NEW LINE $line -“
+  log "- NEW LINE $line -"
     
     rev=$(echo "$line" | awk '{print $1}')
     author=$(echo "$line" | awk '{$1=""; print $0}' )
@@ -336,7 +336,7 @@ done < ./archivoDeCommitsDesdeScript.txt
 > DataFiles.csv
 > DataMethods.csv
 
-echo "Starting to create data files -methods and files-“
+echo "Starting to create data files -methods and files-"
 
 while read line
 do
