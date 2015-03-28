@@ -8,6 +8,7 @@ Miguel Angel Fernandez Sanchez
 import os
 import sys
 from time import strftime, gmtime
+import subprocess
 
 print " - Graph Data Creator Started - "
 print " - MAKE SURE CTAGS, PERL AND GIT ARE INSTALLED IN YOUR COMPUTER\r\n"
@@ -71,6 +72,15 @@ class GraphData:
         if verbose:
             str_out = str(log_line) + "\r\n"
         return str_out
+    
+    def findFittingTag(self, file_cmp, line_num, rev, author):
+        """
+        # First argument: file to compare
+        # Second argument: line number
+        # Third argument: rev
+        # Fourth argument: author
+        """
+        return "Tag"
 
 
 if __name__ == "__main__":
@@ -175,15 +185,33 @@ if __name__ == "__main__":
     print  "Creating tags file: tags"
     # Do this if ctags does not exist, otherwise just update it
     # Getting rid of annoying warning output
-    os.system('ctags -w -R -n . >> 2&>1')
-    os.system('> outputFile.txt')
+    os.system('ctags -w -R -n . >> 2&>1 > outputFile.txt')
+
+    fich = open(commits_file, 'r')
+    commit_lines = " ".join(fich.readlines())
+    commit_lines = commit_lines.split("commit ")
+    rev = ""
+    author = ""
+    for line in commit_lines:
+        if line != "":
+            print my_graph.log(verbose, "NEW LINE: " + line)
+            line = line.split()
+            rev = line[0]
+            line = " ".join(line[1:])
+            line = line.split("Date")
+            line = line[0].split()
+            author = line[1]
+
+            print my_graph.log(verbose, "Author: " + author)
+            to_exe = ['git','diff', '--unified=0', rev]
+            entireDiff = subprocess.check_output(to_exe)
+
+            to_exe = 'git checkout ' + rev
+            os.system(to_exe)
+        
+        
+
     
-    fich_tags = open('tags', 'r') # ¿Abro fichero correcto?
-    tag_lines = fich_tags.readlines()
-    for line in tag_lines:
-        new_line = '-NEW LINE ' + line
-        print my_graph.log(verbose, new_line)
-        # Unfinished
     
 
     
