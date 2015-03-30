@@ -72,15 +72,6 @@ class GraphData:
         if verbose:
             str_out = str(log_line) + "\r\n"
         return str_out
-    
-    def findFittingTag(self, file_cmp, line_num, rev, author):
-        """
-        # First argument: file to compare
-        # Second argument: line number
-        # Third argument: rev
-        # Fourth argument: author
-        """
-        return "Tag"
 
 
 if __name__ == "__main__":
@@ -120,7 +111,8 @@ if __name__ == "__main__":
     # Checking existance of Repository; we need it!
     if os.path.exists("Repository"):
         print "Please, remove directory 'Repository' before starting"
-        raise SystemExit
+        os.system("sudo rm -r Repository")
+        #raise SystemExit
 
     # Checking from and until dates
     if check_date(from_date):
@@ -175,17 +167,27 @@ if __name__ == "__main__":
     print "Reading first line and checking out from first commit"
 
     fich = open(commits_file, 'r')
-    start_line = fich.readlines()[1]
+    commit_lines = fich.readlines()
+    if commit_lines == []:
+        print "Empty commits file"
+        raise SystemExit
+
+    start_line = commit_lines[0]
     fich.close()
     print my_graph.log(verbose, "First line: " + start_line)
 
-    to_exe = 'git checkout -f ' + start_line
-    
+    to_exe = 'git checkout -f ' + start_line.split()[1]
+    print to_exe
+    os.system(to_exe)
         
     print  "Creating tags file: tags"
     # Do this if ctags does not exist, otherwise just update it
     # Getting rid of annoying warning output
     os.system('ctags -w -R -n . >> 2&>1 > outputFile.txt')
+
+    # From 'archivoDeCommitsDesdeScript.txt' file
+    # get file and line of change,
+    # and then get tag, we have to update
 
     fich = open(commits_file, 'r')
     commit_lines = " ".join(fich.readlines())
@@ -194,6 +196,7 @@ if __name__ == "__main__":
     author = ""
     for line in commit_lines:
         if line != "":
+            # Extracting info: commit-id and author
             print my_graph.log(verbose, "NEW LINE: " + line)
             line = line.split()
             rev = line[0]
@@ -208,6 +211,9 @@ if __name__ == "__main__":
 
             to_exe = 'git checkout ' + rev
             os.system(to_exe)
+            raise SystemExit
+            
+
         
         
 
