@@ -79,7 +79,7 @@ function findFittingTag()
     # In this case the output has three fields (no tag)
     log "Adding file tag"
     echo "$3,$1,$4" >> outputFile.txt
-    # >> appends data 
+    # >> appends data --
   else
   
     fittingLine=""
@@ -120,6 +120,7 @@ function findFittingTag()
         if [ -z "${fittingLine}" ]
         then
           if [ "$LineNumber" -gt "$2" ]
+          # Como distingo entre un parametro de funcion y una posicion en una linea?--
           then
             fittingLine=$( echo "$matchLine" )
             bestNumber=$( echo "$LineNumber" )
@@ -249,8 +250,8 @@ echo "Reading first line and checking out from first commit"
 read -r startline<./archivoDeCommitsDesdeScript.txt
 revline=$(echo "$startline" | awk '{print $1}')
 echo $revline
-# Deberia coger el segundo parámetro en vez del primero
-# ¿Por qué coge la palabra 'commit' en vez del identificador?
+# Deberia coger el segundo parámetro en vez del primero--
+# ¿Por qué coge la palabra 'commit' en vez del identificador?--
 log "First line: $revline"
 echo "revline: " + $revline
 
