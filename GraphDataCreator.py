@@ -76,85 +76,85 @@ class GraphData:
     
     def findFitingTag(self, file_compare, ln_num, rev, author, verbose):
     
-    """
-    # First argument: file to compare
-    # Second argument: line number
-    # Third argument: rev
-    # Fourth argument: author
-    """
+        """
+        # First argument: file to compare
+        # Second argument: line number
+        # Third argument: rev
+        # Fourth argument: author
+        """
     
-    command = ["grep", file_compare, "tags"]
-    matches = subprocess.check_output(command)
-    #Case of not matching any tag
-    if matches == "":
-        #In this case the output has three fields (no tag)
-        #log: "Adding file tag"
-        fich = open("outputFile.txt", 'a')
-        line = rev + "," + file_compare + "," + author
-        fich.write(line)
-        fich.close
-    else:
-        
-        fittingLine = ""
-        bestNumber = ""
-
-        # This While loop calculates the method where the line number
-        # received belongs to
-
-        matches_lines = matches.split('\n')
-        for match_line in matches_lines:
-            
-            command = ["echo", match_line, "|", "awk", "print  " + ln_num]
-            fMatch = subprocess.check_output(command)
-            
-            command = ["echo", fMatch, "|", "sed", "'s/*\.//'"]
-            ext = subprocess.check_output(command)
-
-            specialExt = False
-
-            """
-            lines depending on language
-            case ext in cs|java|js|m|mm
-                specialExt = True
-            esac
-            """
-
-            # Fourth parameter in tags file holds the type of tag
-            parameters = match_line.split()
-            # Take #4 parameter, which is type of method in tags
-            condition1 = specialExt and isAFunction == 'm'
-            condition2 = not specialExt and isAFunction == 'f'
-            if (condition1 or condition2):
-                log_line = "We are in a function-> f: "
-                log_line += fMatch + "ext: " + ext 
-                log_line += "Spec: " specialExt + "tag: " + isAFunction
-                print self.log(verbose, log_line)
-                
-                # Removing two last chars from third field to get the line number
-                LineNumber = parameters[3][:-2]
-                
-                # Case of methods matching 
-                if fittingLine == "":
-                    if lineNumber > ln_num:
-                        fittingLine = match_line
-                        bestNumber = lineNumber
-                else:
-                    if ((lineNumber > ln_num) and (lineNumber < bestNumber):
-                        fittingLine = match_line
-                        bestNumber = lineNumber
-
-            log_line = "..and fitting line has been: " + fittingLine
-            print self.log(verbose, log_line)
-            tagToWrite = fittingLine.split()[0]
-
-            # Adding tag to output file
-            log_line = "Adding " + file_compare + tagToWrite
-            log_line += "to outputFile.txt"
+        command = ["grep", file_compare, "tags"]
+        matches = subprocess.check_output(command)
+        #Case of not matching any tag
+        if matches == "":
+            #In this case the output has three fields (no tag)
+            #log: "Adding file tag"
             fich = open("outputFile.txt", 'a')
-            line = rev + "," + file_compare + tagToWrite + "," + author
+            line = rev + "," + file_compare + "," + author
             fich.write(line)
             fich.close
-            return 1
+        else:
+            
+            fittingLine = ""
+            bestNumber = ""
+
+            # This While loop calculates the method where the line number
+            # received belongs to
+
+            matches_lines = matches.split('\n')
+            for match_line in matches_lines:
+                
+                command = ["echo", match_line, "|", "awk", "print  " + ln_num]
+                fMatch = subprocess.check_output(command)
+                
+                command = ["echo", fMatch, "|", "sed", "'s/*\.//'"]
+                ext = subprocess.check_output(command)
+
+                specialExt = False
+
+                """
+                lines depending on language
+                case ext in cs|java|js|m|mm
+                    specialExt = True
+                esac
+                """
+
+                # Fourth parameter in tags file holds the type of tag
+                parameters = match_line.split()
+                # Take #4 parameter, which is type of method in tags
+                condition1 = specialExt and isAFunction == 'm'
+                condition2 = not specialExt and isAFunction == 'f'
+                if (condition1 or condition2):
+                    log_line = "We are in a function-> f: "
+                    log_line += fMatch + "ext: " + ext 
+                    log_line += "Spec: " + specialExt + "tag: " + isAFunction
+                    print self.log(verbose, log_line)
+                    
+                    # Removing two last chars from third field to get the line number
+                    LineNumber = parameters[3][:-2]
+                    
+                    # Case of methods matching 
+                    if fittingLine == "":
+                        if lineNumber > ln_num:
+                            fittingLine = match_line
+                            bestNumber = lineNumber
+                    else:
+                        if ((lineNumber > ln_num) and (lineNumber < bestNumber)):
+                            fittingLine = match_line
+                            bestNumber = lineNumber
+
+                log_line = "..and fitting line has been: " + fittingLine
+                print self.log(verbose, log_line)
+                tagToWrite = fittingLine.split()[0]
+
+                # Adding tag to output file
+                log_line = "Adding " + file_compare + tagToWrite
+                log_line += "to outputFile.txt"
+                fich = open("outputFile.txt", 'a')
+                line = rev + "," + file_compare + tagToWrite + "," + author
+                fich.write(line)
+                fich.close
+                return 1
         
 
 
@@ -289,13 +289,25 @@ if __name__ == "__main__":
             author = line[1]
 
             print my_graph.log(verbose, "Author: " + author)
-            to_exe = ['git','diff', '--unified=0', rev]
+            to_exe = ['git','diff', '--unified=0', rev + "^!"]
             entireDiff = subprocess.check_output(to_exe)
-
+            fichero = open("diff.txt", 'w')
+            fichero.write(entireDiff)
+            fichero.close()
+            print "chechout empezando--------------------______--"
             to_exe = 'git checkout ' + rev
             os.system(to_exe)
-            raise SystemExit
-            
+        
+            print "chechout acabado--------------------______--"
+
+            fichero = open("diff.txt", 'r')
+            entireDiff_lines = fichero.readlines()
+            fichero.close
+            for grepline in entireDiff_lines:
+                ### Getting rid of all lines we dont care about
+      ### We only want this when we don't need to read the output of git diff, but only the files modified ###
+                if grepline[0] != '+' and grepline[0] != '-':
+                    print grepline
 
         
         
