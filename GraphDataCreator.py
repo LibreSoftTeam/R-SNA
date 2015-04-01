@@ -291,18 +291,15 @@ if __name__ == "__main__":
             print my_graph.log(verbose, "Author: " + author)
             to_exe = ['git','diff', '--unified=0', rev + "^!"]
             entireDiff = subprocess.check_output(to_exe)
-            fichero = open("diff.txt", 'w')
-            fichero.write(entireDiff)
-            fichero.close()
-            print "chechout empezando--------------------______--"
+            fich_diff = open("diff.txt", 'w')
+            fich_diff.write(entireDiff)
+            fich_diff.close()
             to_exe = 'git checkout ' + rev
             os.system(to_exe)
-        
-            print "chechout acabado--------------------______--"
 
-            fichero = open("diff.txt", 'r')
-            entireDiff_lines = fichero.readlines()
-            fichero.close
+            fich_diff = open("diff.txt", 'r')
+            entireDiff_lines = fich_diff.readlines()
+            fich_diff.close
             for grepline in entireDiff_lines:
                 ### Getting rid of all lines we dont care about
       ### We only want this when we don't need to read the output of git diff, but only the files modified ###
