@@ -73,6 +73,55 @@ class GraphData:
             str_out = str(log_line) + "\r\n"
         return str_out
 
+    
+    def findFitingTag(self, file_compare, ln_num, rev, author):
+    
+    """
+    # First argument: file to compare
+    # Second argument: line number
+    # Third argument: rev
+    # Fourth argument: author
+    """
+    
+    command = ["grep", file_compare, "tags"]
+    matches = subprocess.check_output(command)
+    #Case of not matching any tag
+    if matches == "":
+        #In this case the output has three fields (no tag)
+        #log: "Adding file tag"
+        fich = open("outputFile.txt", 'a')
+        line = rev + "," + file_compare + "," + author
+        fich.write(line)
+        fich.close
+    else:
+        
+        fittingLine = ""
+        bestNumber = ""
+
+        # This While loop calculates the method where the line number
+        # received belongs to
+
+        matches_lines = matches.split('\n')
+        for match_line in matches_lines:
+            
+            command = ["echo", match_line, "|", "awk", "print  " + ln_num]
+            fMatch = subprocess.check_output(command)
+            
+            command = ["echo", fMatch, "|", "sed", "'s/*\.//'"]
+            ext = subprocess.check_output(command)
+
+            specialExt = False
+
+            """
+            case ext in cs|java|js|m|mm
+                specialExt = True
+            esac
+            """
+
+            # Fourth parameter in tags file holds the type of tag
+            
+        
+
 
 if __name__ == "__main__":
     my_graph = GraphData()
