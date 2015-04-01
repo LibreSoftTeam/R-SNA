@@ -74,7 +74,7 @@ class GraphData:
         return str_out
 
     
-    def findFitingTag(self, file_compare, ln_num, rev, author):
+    def findFitingTag(self, file_compare, ln_num, rev, author, verbose):
     
     """
     # First argument: file to compare
@@ -113,13 +113,48 @@ class GraphData:
             specialExt = False
 
             """
+            lines depending on language
             case ext in cs|java|js|m|mm
                 specialExt = True
             esac
             """
 
             # Fourth parameter in tags file holds the type of tag
-            
+            parameters = match_line.split()
+            # Take #4 parameter, which is type of method in tags
+            condition1 = specialExt and isAFunction == 'm'
+            condition2 = not specialExt and isAFunction == 'f'
+            if (condition1 or condition2):
+                log_line = "We are in a function-> f: "
+                log_line += fMatch + "ext: " + ext 
+                log_line += "Spec: " specialExt + "tag: " + isAFunction
+                print self.log(verbose, log_line)
+                
+                # Removing two last chars from third field to get the line number
+                LineNumber = parameters[3][:-2]
+                
+                # Case of methods matching 
+                if fittingLine == "":
+                    if lineNumber > ln_num:
+                        fittingLine = match_line
+                        bestNumber = lineNumber
+                else:
+                    if ((lineNumber > ln_num) and (lineNumber < bestNumber):
+                        fittingLine = match_line
+                        bestNumber = lineNumber
+
+            log_line = "..and fitting line has been: " + fittingLine
+            print self.log(verbose, log_line)
+            tagToWrite = fittingLine.split()[0]
+
+            # Adding tag to output file
+            log_line = "Adding " + file_compare + tagToWrite
+            log_line += "to outputFile.txt"
+            fich = open("outputFile.txt", 'a')
+            line = rev + "," + file_compare + tagToWrite + "," + author
+            fich.write(line)
+            fich.close
+            return 1
         
 
 
