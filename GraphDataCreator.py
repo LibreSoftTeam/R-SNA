@@ -160,8 +160,7 @@ if __name__ == "__main__":
     # Checking existance of Repository; we need it!
     if os.path.exists("Repository"):
         print "Please, remove directory 'Repository' before starting"
-        os.system("sudo rm -r Repository")
-        #raise SystemExit
+        raise SystemExit
 
     # Checking from and until dates
     if check_date(from_date):
