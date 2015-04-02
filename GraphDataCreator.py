@@ -69,12 +69,15 @@ class GraphData:
 
     def log(self, verbose, log_line):
         str_out = ""
+        log_file = open("graph_log.txt", 'a')
+        log_file.write(log_line + '\n')
+        log_file.close()
         if verbose:
             str_out = str(log_line) + "\r\n"
         return str_out
 
     
-    def findFitingTag(self, file_compare, ln_num, rev, author, verbose):
+    def findFittingTag(self, file_compare, ln_num, rev, author, verbose):
     
         """
         # First argument: file to compare
@@ -82,9 +85,9 @@ class GraphData:
         # Third argument: rev
         # Fourth argument: author
         """
-    
-        command = ["grep", file_compare, "tags"]
-        matches = subprocess.check_output(command)
+
+        command1 = ["grep", file_compare, "tags"]
+        matches = subprocess.check_output(command1)
         #Case of not matching any tag
         if matches == "":
             #In this case the output has three fields (no tag)
@@ -104,11 +107,11 @@ class GraphData:
             matches_lines = matches.split('\n')
             for match_line in matches_lines:
                 
-                command = ["echo", match_line, "|", "awk", "print  " + ln_num]
-                fMatch = subprocess.check_output(command)
+                command2 = ["echo", match_line, "|", "awk", "print  " + ln_num]
+                fMatch = subprocess.check_output(command2)
                 
-                command = ["echo", fMatch, "|", "sed", "'s/*\.//'"]
-                ext = subprocess.check_output(command)
+                command3 = ["echo", fMatch, "|", "sed", "'s/*\.//'"]
+                ext = subprocess.check_output(command3)
 
                 specialExt = False
 
@@ -121,9 +124,10 @@ class GraphData:
 
                 # Fourth parameter in tags file holds the type of tag
                 parameters = match_line.split()
+                isAFunction = parameters[3]
                 # Take #4 parameter, which is type of method in tags
-                condition1 = specialExt and isAFunction == 'm'
-                condition2 = not specialExt and isAFunction == 'f'
+                condition1 = specialExt and (isAFunction == 'm')
+                condition2 = not specialExt and (isAFunction == 'f')
                 if (condition1 or condition2):
                     log_line = "We are in a function-> f: "
                     log_line += fMatch + "ext: " + ext 
@@ -143,17 +147,20 @@ class GraphData:
                             fittingLine = match_line
                             bestNumber = lineNumber
 
-                log_line = "..and fitting line has been: " + fittingLine
-                print self.log(verbose, log_line)
-                tagToWrite = fittingLine.split()[0]
+                # Not sure of this
+                if fittingLine != "":
+                    log_line = "..and fitting line has been: " + fittingLine
+                    print self.log(verbose, log_line)
+                    tagToWrite = fittingLine.split()[0]
 
-                # Adding tag to output file
-                log_line = "Adding " + file_compare + tagToWrite
-                log_line += "to outputFile.txt"
-                fich = open("outputFile.txt", 'a')
-                line = rev + "," + file_compare + tagToWrite + "," + author
-                fich.write(line)
-                fich.close
+                    # Adding tag to output file
+                    log_line = "Adding " + file_compare + tagToWrite
+                    log_line += "to outputFile.txt"
+                    fich = open("outputFile.txt", 'a')
+                    line = rev + "," + file_compare + tagToWrite + "," + author
+                    fich.write(line)
+                    fich.close
+
                 return 1
         
 
@@ -277,6 +284,8 @@ if __name__ == "__main__":
     commit_lines = commit_lines.split("commit ")
     rev = ""
     author = ""
+    file1 = ""
+    lineNumber1 = ""
     for line in commit_lines:
         if line != "":
             # Extracting info: commit-id and author
@@ -300,14 +309,57 @@ if __name__ == "__main__":
             fich_diff = open("diff.txt", 'r')
             entireDiff_lines = fich_diff.readlines()
             fich_diff.close
+            
+            allFiles = open("allFiles.txt", 'a')
             for grepline in entireDiff_lines:
                 ### Getting rid of all lines we dont care about
-      ### We only want this when we don't need to read the output of git diff, but only the files modified ###
-                if grepline[0] != '+' and grepline[0] != '-':
-                    print grepline
+      ### We only want this when we don't need to read the output of git diff, 
+      ### but only the files modified ###   
 
-        
-        
+                if grepline[0] != '+' and grepline[0] != '-':
+                    grepline_data = grepline.split()
+                    if grepline_data[0] == "diff":
+                        for data in grepline_data:
+                            if (data[0] == 'b') and (data[1] == '/'):
+                                file1 = data[2:]
+                                allFiles.write(file1 + '\n')
+                    elif grepline_data[0] == "@@":
+                        for data in grepline_data:
+                            if data[0] == "+":
+                                lineNumber1 = data[1:]
+
+                    if file1 == "":
+                        lastFile2 = file1
+                        print my_graph.log(verbose, "File: " + file1)
+    
+                    if lineNumber1 == "":
+                        # When grep is empty, we add a tag -> 
+                        # it will be a file-to-file collaboration
+                        lastFile2 = file1
+                        out1 = my_graph.findFittingTag(lastFile2, lineNumber1,
+                                                rev, author, verbose)
+                        #Value of lastFile2 in other case?
+
+            print "Tag and committer added to output file"
+            print "Now updating ctags file"
+            ## HERE UPDATING TAGS FILE WITH TAGS OF MODIFIED FILES
+
+            allFiles.close()
+            allFiles_data = open("allFiles.txt", 'r')
+            allFiles_lines = allFiles_data.readlines()
+
+
+
+
+
+
+
+
+
+
+
+            
+            
 
     
     
