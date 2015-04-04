@@ -87,7 +87,11 @@ class GraphData:
         """
 
         command1 = ["grep", file_compare, "tags"]
-        matches = subprocess.check_output(command1)
+        matches = ""
+        try:
+            matches = subprocess.check_output(command1)
+        except subprocess.CalledProcessError:
+            print "Error with ctags"
         #Case of not matching any tag
         if matches == "":
             #In this case the output has three fields (no tag)
@@ -348,20 +352,18 @@ if __name__ == "__main__":
             allFiles_data = open("allFiles.txt", 'r')
             allFiles_lines = allFiles_data.readlines()
 
+            for file_line in allFiles_lines:
+                print my_graph.log(verbose, "FILE: " + file_line)
+                to_exe_tmp = "ctags -f AuxTagFile.txt -n ~/Repository/"
+                to_exe_tmp += file_line
+                # ctags warning: can't open such file or directory
+                os.system(to_exe_tmp)
+                # remove comment lines from the just-created tag file
+                rmv_cmt1 = 'perl -n -i.bak -e "print unless '
+                rmv_cmt1 += '/_TAG_FILE_/" AuxTagFile.txt'
+                os.system(rmv_cmt1)
 
-
-
-
-
-
-
-
-
-
-            
-            
-
-    
-    
-
+                rmv_cmt2 = 'perl -n -i.bak -e "print unless '
+                rmv_cmt2 += '/_TAG_PROGRAM_/" AuxTagFile.txt'
+                os.system(rmv_cmt2)
     
