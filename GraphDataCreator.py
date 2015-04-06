@@ -18,15 +18,15 @@ def help():
     """
         Prints usage & description
     """
-    line = "\r\nNAME\r\n\r\nGraphDataCreator.sh\r\n\r\n"
-    line += "USAGE\r\n\r\n./GrahDataCreator [SHORT-OPTION]\r\n\r\n"
+    line = "\r\nNAME\r\n\r\nGraphDataCreator.py\r\n\r\n"
+    line += "USAGE\r\n\r\n./GrahDataCreator.py [SHORT-OPTION]\r\n\r\n"
     line += "EXAMPLE\r\n\r\n"
-    line += "./GraphDataCreator.sh -f 2010-1-1 -t 2011-1-1 -r "
+    line += "./GraphDataCreator.py -f 2010-1-1 -t 2011-1-1 -r "
     line += "git://git.openstack.org/openstack/swift -v\r\n\r\n"
 
     line += "DESCRIPTION\r\n\r\n"
-    line += "GraphDataCreator.sh reads information of a Git repository and"
-    line += " outputs two\n.csv files ready to be read to represent"
+    line += "GraphDataCreator.py reads information of a Git repository and"
+    line += " outputs two\nCSV files ready to be read to represent"
     line += " a software community. The files\ncontain pairs "
     line += "developer-developer meaning that both developers have\nworked "
     line += "together. One file uses file-scope to create a relationship "
@@ -38,12 +38,12 @@ def help():
     line += "the beginning of times.\n\tFormat: 2012-12-31\r\n\r\n"
     line += "-t\tEnding date of study. When empty, current date will "
     line += "be chosen.\n\tFormat: 2012-12-31\r\n\r\n"
-    line += "-r\tRepository url. When empty, we assume we are "
+    line += "-r\tRepository URL. When empty, we assume we are "
     line += "in a directory tracked by Git. \n\tExample: "
     line += "git://git.openstack.org/openstack/swift\r\n"
     line += "\r\n-v\tVerbose mode."
 
-    line += "\r\n\r\nDEPENDENCIES\r\n\r\nPerl, Git and Ctags need to run "
+    line += "\r\n\r\nDEPENDENCIES\r\n\r\nPerl, git and ctags are required to run "
     line += "this script.\r\n\r\nOUTPUT\r\n\r\n"
     line += "DataMethods.csv-File using relationship-in-method approach\r\n"
     line += "DataFiles.csv-File using relantionship-in-file approach\r\n"
@@ -99,9 +99,8 @@ class GraphData:
             fich = open("outputFile.txt", 'a')
             line = rev + "," + file_compare + "," + author
             fich.write(line)
-            fich.close
+            fich.close()
         else:
-            
             fittingLine = ""
             bestNumber = ""
 
@@ -163,7 +162,7 @@ class GraphData:
                     fich = open("outputFile.txt", 'a')
                     line = rev + "," + file_compare + tagToWrite + "," + author
                     fich.write(line)
-                    fich.close
+                    fich.close()
 
                 return 1
         
@@ -171,9 +170,16 @@ class GraphData:
 
 if __name__ == "__main__":
     my_graph = GraphData()
+    # FIXME: all output files should be named here
+    # FIXME: better under a "data" subdirectory
+    # FIXME: all these variables should start with conf_
     commits_file = 'archivoDeCommitsDesdeScript.txt'
     
-    # Initialising options
+    if len(sys.argv) == 1:
+        print help()
+        raise SystemExit
+    
+    # Initialising options. FIXME: conf_ variables!
     verbose = False
     from_date = '1971-1-1'
     until_date = strftime("%Y-%m-%d", gmtime())
@@ -184,7 +190,8 @@ if __name__ == "__main__":
 
     url_repo = ""
 
-    # Check introduced paramenters
+    # Check introduced parameters
+    # FIXME: change this to a dictionary!
     user_param = " ".join(sys.argv)
     list_param = user_param.split(" -")
     for value in list_param:
@@ -207,6 +214,8 @@ if __name__ == "__main__":
     if os.path.exists("Repository"):
         print "Please, remove directory 'Repository' before starting"
         raise SystemExit
+        
+    # FIXME: check if there is a data subdirectory as well!
 
     # Checking from and until dates
     if check_date(from_date):
@@ -235,7 +244,9 @@ if __name__ == "__main__":
         else:
             print "Error downloading Repository"
             raise SystemExit
-
+    else:
+        print "No git repo specified!"
+        raise SystemExit
 
     if not os.path.exists(".git"):
         print "No Git repository found."
@@ -249,6 +260,7 @@ if __name__ == "__main__":
     git_log += str(until_date) + '--pretty=format:"%H &an" > '
     git_log += commits_file
     os.system(git_log)
+    print "Executing: " + git_log
 
     if os.path.exists(commits_file):
         print "File of commits created succesfully"
@@ -262,7 +274,7 @@ if __name__ == "__main__":
 
     fich = open(commits_file, 'r')
     commit_lines = fich.readlines()
-    if commit_lines == []:
+    if len(commit_lines) == 0:
         print "Empty commits file"
         raise SystemExit
 
@@ -271,12 +283,13 @@ if __name__ == "__main__":
     print my_graph.log(verbose, "First line: " + start_line)
 
     to_exe = 'git checkout -f ' + start_line.split()[1]
-    print to_exe
+    print "Executing: " + to_exe
     os.system(to_exe)
         
     print  "Creating tags file: tags"
     # Do this if ctags does not exist, otherwise just update it
     # Getting rid of annoying warning output
+    print "Executing: ctags -w -R -n . >> 2&>1 > outputFile.txt"
     os.system('ctags -w -R -n . >> 2&>1 > outputFile.txt')
 
     # From 'archivoDeCommitsDesdeScript.txt' file
@@ -312,7 +325,7 @@ if __name__ == "__main__":
 
             fich_diff = open("diff.txt", 'r')
             entireDiff_lines = fich_diff.readlines()
-            fich_diff.close
+            fich_diff.close()
             
             allFiles = open("allFiles.txt", 'a')
             for grepline in entireDiff_lines:
@@ -354,9 +367,11 @@ if __name__ == "__main__":
 
             for file_line in allFiles_lines:
                 print my_graph.log(verbose, "FILE: " + file_line)
-                to_exe_tmp = "ctags -f AuxTagFile.txt -n ~/Repository/"
+                # FIXME: avoid absolute path!
+                to_exe_tmp = "ctags -f AuxTagFile.txt -n /home/grex/tmp/R-SNA/Repository/"
                 to_exe_tmp += file_line
                 # ctags warning: can't open such file or directory
+                print "Executing: " + to_exe_tmp
                 os.system(to_exe_tmp)
                 # remove comment lines from the just-created tag file
                 rmv_cmt1 = 'perl -n -i.bak -e "print unless '
@@ -366,4 +381,3 @@ if __name__ == "__main__":
                 rmv_cmt2 = 'perl -n -i.bak -e "print unless '
                 rmv_cmt2 += '/_TAG_PROGRAM_/" AuxTagFile.txt'
                 os.system(rmv_cmt2)
-    
