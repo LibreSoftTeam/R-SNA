@@ -50,26 +50,63 @@ def help():
     return line
 
 
-def check_date(date):
+def check_date(date, date_type):
     """
-    Checks if a date has format 'YYYY-MM-DD'
+    Checks if a date (type: starting or ending)
+    has format 'YYYY-MM-DD'. Returns pair of values:
+    [<0/1>(wrong/correct), description]
     """
     date = str(date)
     date_fields = date.split('-')
-    ans = 0
+    result = [0, ""]
     if len(date_fields) == 3:
         if date_fields[0] >= 1971:
             if (int(date_fields[1]) > 0) and (int(date_fields[1]) < 13):
                 if (int(date_fields[2]) > 0) and (int(date_fields[2]) < 32):
-                    ans = 1
-    return ans
+                    result[0] = 1
+
+    if result[0]:
+        result[1] = "Valid " + date_type + " date: " + date
+    else:
+        result[1] = date_type + " date is wrong. "
+        result[1] += "\nPlease use option -h for further information"
+    return result
+
+def extract_options(list_opt, dicc_opt):
+    """
+    Extracts data from program arguments and fills a dictionary
+        # Verbose option (-v)
+        # Starting date of study option (-f)
+        # Ending date option (-t)
+        # Repository URL option (-r)
+        # Show help option (-h)
+    """
+    user_param = " ".join(list_opt)
+    list_param = user_param.split(" -")
+    for value in list_param:
+        value_tmp = value.split()
+        if len(value_tmp) == 2:
+            if value_tmp[0] == "f":
+                dicc_opt['f'] = str(value_tmp[1])
+            elif value_tmp[0] == "t":
+                dicc_opt['t'] = str(value_tmp[1])
+            elif value_tmp[0] == "r":
+                dicc_opt['r'] = str(value_tmp[1])
+        else:
+            if value == 'v':
+                dicc_opt['v'] = True
+            elif value == 'h':
+                dicc_opt['h'] = True
+
+    return 1
+
 
 
 class GraphData:
 
     def log(self, verbose, log_line):
         str_out = ""
-        log_file = open("graph_log.txt", 'a')
+        log_file = open("log_file", 'a')
         log_file.write(log_line + '\n')
         log_file.close()
         if verbose:
@@ -87,6 +124,7 @@ class GraphData:
         """
 
         command1 = ["grep", file_compare, "tags"]
+        """
         matches = ""
         try:
             matches = subprocess.check_output(command1)
@@ -96,7 +134,7 @@ class GraphData:
         if matches == "":
             #In this case the output has three fields (no tag)
             #log: "Adding file tag"
-            fich = open("outputFile.txt", 'a')
+            fich = open("output_file", 'a')
             line = rev + "," + file_compare + "," + author
             fich.write(line)
             fich.close()
@@ -118,12 +156,12 @@ class GraphData:
 
                 specialExt = False
 
-                """
+                ###
                 lines depending on language
                 case ext in cs|java|js|m|mm
                     specialExt = True
                 esac
-                """
+                ###
 
                 # Fourth parameter in tags file holds the type of tag
                 parameters = match_line.split()
@@ -158,89 +196,93 @@ class GraphData:
 
                     # Adding tag to output file
                     log_line = "Adding " + file_compare + tagToWrite
-                    log_line += "to outputFile.txt"
-                    fich = open("outputFile.txt", 'a')
+                    log_line += "to output_file"
+                    fich = open("output_file", 'a')
                     line = rev + "," + file_compare + tagToWrite + "," + author
                     fich.write(line)
                     fich.close()
+                """
 
-                return 1
-        
+        return 1
+
+    
 
 
 if __name__ == "__main__":
     my_graph = GraphData()
-    # FIXME: all output files should be named here
-    # FIXME: better under a "data" subdirectory
-    # FIXME: all these variables should start with conf_
-    commits_file = 'archivoDeCommitsDesdeScript.txt'
+    
+    
+    # FIXME: all output files should be named here // Done
+    # FIXME: better under a "data" subdirectory // Done
+    # FIXME: all these variables should start with conf_ // Done (Dictionary)
+
+    data_path = "Data"
+    out_names = {}
+    out_files = {}
+    out_names['commits'] = data_path + "/archivoDeCommitsDesdeScript.txt"
+    out_names['output'] = data_path + "/outputFile.txt"
+    out_names['log'] = data_path + "/graph_data.log"
+    out_names['diff'] = data_path + "/diff.txt"
+    out_names['allFiles'] = data_path + "/allFiles.txt"
+    out_names['auxTag'] = data_path + "/AuxTagFile.txt"
+
     
     if len(sys.argv) == 1:
         print help()
         raise SystemExit
     
-    # Initialising options. FIXME: conf_ variables!
-    verbose = False
-    from_date = '1971-1-1'
-    until_date = strftime("%Y-%m-%d", gmtime())
+    # Initialising options. FIXME: conf_ variables! // Done
+    # FIXME: change this to a dictionary! // Done
+
+    conf_opt = {}
+    conf_opt['v'] = True  # Verbose option (-v)
+    conf_opt['f'] = '1971-1-1' # Starting date of study option (-f)
+    conf_opt['t'] = strftime("%Y-%m-%d", gmtime()) # Ending date option (-t)
+    conf_opt['r'] = "" # Repository URL option (-r)
+    conf_opt['h'] = False  # Show help option (-h)
+
+    do_def = extract_options(sys.argv, conf_opt)
+
     unamestr = os.uname()[0]
     if unamestr != 'Linux':
         print "We are not under Linux, no options available"
         raise SystemExit
 
-    url_repo = ""
-
-    # Check introduced parameters
-    # FIXME: change this to a dictionary!
-    user_param = " ".join(sys.argv)
-    list_param = user_param.split(" -")
-    for value in list_param:
-        value_tmp = value.split()
-        if len(value_tmp) == 2:
-            if value_tmp[0] == 'f':
-                from_date = value_tmp[1]
-            elif value_tmp[0] == 't':
-                until_date = value_tmp[1]
-            elif value_tmp[0] == 'r':
-                url_repo = value_tmp[1]
-        else:
-            if value == 'v':
-                verbose = True
-                print "Verbose mode on"
-            elif value == 'h':
-                print help()
-
     # Checking existance of Repository; we need it!
     if os.path.exists("Repository"):
         print "Please, remove directory 'Repository' before starting"
         raise SystemExit
-        
-    # FIXME: check if there is a data subdirectory as well!
+
+    # FIXME: check if there is a data subdirectory as well! // Done
+    if os.path.exists("Data"):
+        print "Please, remove directory 'Data' before starting"
+        raise SystemExit
+    else:
+        os.mkdir(data_path)
+        for out_file in out_names.keys():   
+            out_files[out_file] = open(out_names[out_file], 'a')
+
+    # Check introduced parameters
+    if conf_opt['v']:
+        print "Verbose mode on"
+    if conf_opt['h']:
+        print help()
 
     # Checking from and until dates
-    if check_date(from_date):
-        print "Valid starting date: " + from_date
-    else:
-        print "Starting date is wrong. "
-        print "Please use option -h for further information"
+    start_date = check_date(conf_opt['f'], 'starting')
+    end_date = check_date(conf_opt['t'], 'ending')
+    print start_date[1] + '\r\n' + end_date[1]
+    if (not start_date[0]) or (not end_date[0]):
         raise SystemExit
 
-    if check_date(until_date):
-        print "Valid ending date: " + until_date
-    else:
-        print "Ending date is wrong. "
-        print "Please use option -h for further information"
-        raise SystemExit
 
-    if url_repo != "":
+    if conf_opt['r'] != "":
         print "Starting download of Repository"
-        to_exe = "git clone " + url_repo + " Repository"
+        to_exe = "git clone " + conf_opt['r'] + " Repository"
         os.system(to_exe)
         dwnl_error = False
         if not dwnl_error:
             print "Repository downloaded succesfully"
-            os.chdir("Repository")
-            os.system("pwd")
         else:
             print "Error downloading Repository"
             raise SystemExit
@@ -255,6 +297,9 @@ if __name__ == "__main__":
 
     # First: git clone: project as a parameter
     # -------- git clone url folder-name ----------------
+
+    print "Break-point"
+    raise SystemExit
 
     git_log = 'git log --all --since=' + str(from_date) + ' --until='
     git_log += str(until_date) + '--pretty=format:"%H &an" > '
@@ -289,8 +334,8 @@ if __name__ == "__main__":
     print  "Creating tags file: tags"
     # Do this if ctags does not exist, otherwise just update it
     # Getting rid of annoying warning output
-    print "Executing: ctags -w -R -n . >> 2&>1 > outputFile.txt"
-    os.system('ctags -w -R -n . >> 2&>1 > outputFile.txt')
+    print "Executing: ctags -w -R -n . >> 2&>1 > output_file"
+    os.system('ctags -w -R -n . >> 2&>1 > output_file')
 
     # From 'archivoDeCommitsDesdeScript.txt' file
     # get file and line of change,
@@ -317,17 +362,17 @@ if __name__ == "__main__":
             print my_graph.log(verbose, "Author: " + author)
             to_exe = ['git','diff', '--unified=0', rev + "^!"]
             entireDiff = subprocess.check_output(to_exe)
-            fich_diff = open("diff.txt", 'w')
+            fich_diff = open("diff_file", 'w')
             fich_diff.write(entireDiff)
             fich_diff.close()
             to_exe = 'git checkout ' + rev
             os.system(to_exe)
 
-            fich_diff = open("diff.txt", 'r')
+            fich_diff = open("diff_file", 'r')
             entireDiff_lines = fich_diff.readlines()
             fich_diff.close()
             
-            allFiles = open("allFiles.txt", 'a')
+            allFiles = open("allFiles_file", 'a')
             for grepline in entireDiff_lines:
                 ### Getting rid of all lines we dont care about
       ### We only want this when we don't need to read the output of git diff, 
@@ -362,22 +407,22 @@ if __name__ == "__main__":
             ## HERE UPDATING TAGS FILE WITH TAGS OF MODIFIED FILES
 
             allFiles.close()
-            allFiles_data = open("allFiles.txt", 'r')
+            allFiles_data = open("allFiles_file", 'r')
             allFiles_lines = allFiles_data.readlines()
 
             for file_line in allFiles_lines:
                 print my_graph.log(verbose, "FILE: " + file_line)
                 # FIXME: avoid absolute path!
-                to_exe_tmp = "ctags -f AuxTagFile.txt -n /home/grex/tmp/R-SNA/Repository/"
+                to_exe_tmp = "ctags -f auxTags_file -n /home/grex/tmp/R-SNA/Repository/"
                 to_exe_tmp += file_line
                 # ctags warning: can't open such file or directory
                 print "Executing: " + to_exe_tmp
                 os.system(to_exe_tmp)
                 # remove comment lines from the just-created tag file
                 rmv_cmt1 = 'perl -n -i.bak -e "print unless '
-                rmv_cmt1 += '/_TAG_FILE_/" AuxTagFile.txt'
+                rmv_cmt1 += '/_TAG_FILE_/" auxTags_file'
                 os.system(rmv_cmt1)
 
                 rmv_cmt2 = 'perl -n -i.bak -e "print unless '
-                rmv_cmt2 += '/_TAG_PROGRAM_/" AuxTagFile.txt'
+                rmv_cmt2 += '/_TAG_PROGRAM_/" auxTags_file'
                 os.system(rmv_cmt2)
