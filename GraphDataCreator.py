@@ -13,6 +13,8 @@ import subprocess
 print " - Graph Data Creator Started - "
 print " - MAKE SURE CTAGS, PERL AND GIT ARE INSTALLED IN YOUR COMPUTER\r\n"
 
+INIT_PATH = os.path.abspath(os.curdir)
+
 
 def help():
     """
@@ -125,6 +127,22 @@ def dir_exists(directory):
         return 1
     else:
         return 0
+        
+
+def go_home_dir():
+    """
+    Goes back in current path to home directory
+    """
+    init_list = INIT_PATH.split('/')
+    cur_dir =  os.path.abspath(os.curdir)
+    list_dir = cur_dir.split('/')
+    
+    exceeds = len(list_dir) - len(init_list)
+    if exceeds > 0:
+        print "Going up " + str(exceeds) + " directory levels"
+        for i in range(exceeds):
+            os.chdir('..')
+
 
 
 class GraphData:
@@ -133,7 +151,10 @@ class GraphData:
     def __init__(self):
         
         self.DATA_PATH = "Data"
+        self.TAGS_PATH = self.DATA_PATH + '/' + 'tags'
+        self.CHECKOUT_PATH = self.DATA_PATH + '/' + 'checkout'
         self.out_names = {}
+        self.out_paths = {}
         self.out_files = {}
 
         self.out_names['commits'] = "CommitsFromScriptFile.txt"
@@ -151,21 +172,24 @@ class GraphData:
         self.conf_opt['r'] = "" # Repository URL option (-r)
         self.conf_opt['h'] = False  # Show help option (-h)
 
-    def log(self, verbose, log_line):
+    def log(self, log_line):
         str_out = ""
         log_file = open("log_file", 'a')
         log_file.write(log_line + '\n')
         log_file.close()
-        if verbose:
+        if self.conf_opt['v']:
             str_out = str(log_line) + "\r\n"
         return str_out
 
     def create_data_files(self):
             os.mkdir(self.DATA_PATH)
-            os.mkdir(self.DATA_PATH + "/tags")
+            os.mkdir(self.TAGS_PATH)
+            os.mkdir(self.CHECKOUT_PATH)
             for out_file in self.out_names.keys():
                 dir_to_open = self.DATA_PATH + '/' + self.out_names[out_file]
+                self.out_paths[out_file] = dir_to_open
                 self.out_files[out_file] = open(dir_to_open, 'a')
+
 
     def check_program_starting(self):
         """
@@ -238,7 +262,7 @@ class GraphData:
         self.out_files['commits'].close()
         self.out_files['commits'] = open(self.out_names['commits'], 'r')
         file_content = self.out_files['commits'].readlines()
-        
+
         if file_content != []:
             print "File of commits filled succesfully"
             os.chdir("..")
@@ -248,7 +272,40 @@ class GraphData:
             raise SystemExit
         
         print "|---------------- GIT LOG END --------------|\r\n"
+        return file_content
+        
+        
+        
+    def copy_and_move_repo(self, path_cp):
+        """
+        Copies Repository file to prevent unwanted changes
+        and moves files into previous folder
+        """
+        os.system('cp -r Repository -t' + path_cp)
+        lis_dir = os.listdir(path_cp + '/' + 'Repository')
+        for repo_file in lis_dir:
+            move = 'mv ' + path_cp + '/Repository/' + repo_file + ' ' + path_cp
+            os.system(move)
+        erase_empty = 'rm -r ' + path_cp + '/Repository'
+        os.system(erase_empty)
+        os.chdir(path_cp)
+        
 
+    def do_checkout(self, path_chk, rev):
+        """
+        Creates a directory where do a checkout with specified rev
+        """
+        print "|---------------- GIT CHEKOUT START --------------|\r\n"
+        dir_co = my_graph.CHECKOUT_PATH + '/' + rev1
+        os.mkdir(dir_co)
+        self.copy_and_move_repo(dir_co)
+        to_exe = 'git checkout -f ' + start_line.split()[1]
+        print "Executing: " + to_exe
+        os.system(to_exe)
+        go_home_dir()
+        print "|---------------- GIT CHECKOUT END --------------|\r\n"
+        
+        
     def findFittingTag(self, file_compare, ln_num, rev, author, verbose):
     
         """
@@ -259,84 +316,7 @@ class GraphData:
         """
 
         command1 = ["grep", file_compare, "tags"]
-        """
-        matches = ""
-        try:
-            matches = subprocess.check_output(command1)
-        except subprocess.CalledProcessError:
-            print "Error with ctags"
-        #Case of not matching any tag
-        if matches == "":
-            #In this case the output has three fields (no tag)
-            #log: "Adding file tag"
-            fich = open("output_file", 'a')
-            line = rev + "," + file_compare + "," + author
-            fich.write(line)
-            fich.close()
-        else:
-            fittingLine = ""
-            bestNumber = ""
-
-            # This While loop calculates the method where the line number
-            # received belongs to
-
-            matches_lines = matches.split('\n')
-            for match_line in matches_lines:
-                
-                command2 = ["echo", match_line, "|", "awk", "print  " + ln_num]
-                fMatch = subprocess.check_output(command2)
-                
-                command3 = ["echo", fMatch, "|", "sed", "'s/*\.//'"]
-                ext = subprocess.check_output(command3)
-
-                specialExt = False
-
-                ###
-                lines depending on language
-                case ext in cs|java|js|m|mm
-                    specialExt = True
-                esac
-                ###
-
-                # Fourth parameter in tags file holds the type of tag
-                parameters = match_line.split()
-                isAFunction = parameters[3]
-                # Take #4 parameter, which is type of method in tags
-                condition1 = specialExt and (isAFunction == 'm')
-                condition2 = not specialExt and (isAFunction == 'f')
-                if (condition1 or condition2):
-                    log_line = "We are in a function-> f: "
-                    log_line += fMatch + "ext: " + ext 
-                    log_line += "Spec: " + specialExt + "tag: " + isAFunction
-                    print self.log(verbose, log_line)
-                    
-                    # Removing two last chars from third field to get the line number
-                    LineNumber = parameters[3][:-2]
-                    
-                    # Case of methods matching 
-                    if fittingLine == "":
-                        if lineNumber > ln_num:
-                            fittingLine = match_line
-                            bestNumber = lineNumber
-                    else:
-                        if ((lineNumber > ln_num) and (lineNumber < bestNumber)):
-                            fittingLine = match_line
-                            bestNumber = lineNumber
-
-                # Not sure of this
-                if fittingLine != "":
-                    log_line = "..and fitting line has been: " + fittingLine
-                    print self.log(verbose, log_line)
-                    tagToWrite = fittingLine.split()[0]
-
-                    # Adding tag to output file
-                    log_line = "Adding " + file_compare + tagToWrite
-                    log_line += "to output_file"
-                    fich = open("output_file", 'a')
-                    line = rev + "," + file_compare + tagToWrite + "," + author
-                    fich.write(line)
-                    fich.close()
-                """
+       
 
         return 1
 
@@ -365,28 +345,20 @@ if __name__ == "__main__":
     # -------- git clone url folder-name ----------------
     my_graph.download_repo()
     
-    my_graph.extract_git_log()
-    print "Break-point"
-    raise SystemExit
-
     # Now we read the first line of the file with the commit revs
 
     print "Reading first line and checking out from first commit"
-
-    fich = open(commits_file, 'r')
-    commit_lines = fich.readlines()
-    if len(commit_lines) == 0:
-        print "Empty commits file"
-        raise SystemExit
+    commit_lines = my_graph.extract_git_log()
 
     start_line = commit_lines[0]
-    fich.close()
-    print my_graph.log(verbose, "First line: " + start_line)
+    print my_graph.log("First line: " + start_line)
+    rev1 = start_line.split()[1]
+    
+    my_graph.do_checkout(my_graph.CHECKOUT_PATH, rev1)
+    
+    print "Break-point"
+    raise SystemExit
 
-    to_exe = 'git checkout -f ' + start_line.split()[1]
-    print "Executing: " + to_exe
-    os.system(to_exe)
-        
     print  "Creating tags file: tags"
     # Do this if ctags does not exist, otherwise just update it
     # Getting rid of annoying warning output
