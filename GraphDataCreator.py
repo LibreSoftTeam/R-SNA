@@ -45,8 +45,8 @@ def help():
     line += "git://git.openstack.org/openstack/swift\r\n"
     line += "\r\n-v\tVerbose mode."
 
-    line += "\r\n\r\nDEPENDENCIES\r\n\r\nPerl, git and ctags are required to run "
-    line += "this script.\r\n\r\nOUTPUT\r\n\r\n"
+    line += "\r\n\r\nDEPENDENCIES\r\n\r\nPerl, git and ctags are required "
+    line += "to run this script.\r\n\r\nOUTPUT\r\n\r\n"
     line += "DataMethods.csv-File using relationship-in-method approach\r\n"
     line += "DataFiles.csv-File using relantionship-in-file approach\r\n"
     return line
@@ -54,6 +54,7 @@ def help():
 
 def error_info(show_line):
     return show_line
+
 
 def check_date(date, date_type):
     """
@@ -86,9 +87,9 @@ def under_linux():
     unamestr = os.uname()[0]
     if unamestr != 'Linux':
         print "We are not under Linux, no options available"
-        return 0;
+        return 0
     else:
-        return 1;
+        return 1
 
 
 def extract_options(list_opt, dicc_opt):
@@ -127,16 +128,15 @@ def dir_exists(directory):
         return 1
     else:
         return 0
-        
+
 
 def go_home_dir():
     """
     Goes back in current path to home directory
     """
     init_list = INIT_PATH.split('/')
-    cur_dir =  os.path.abspath(os.curdir)
+    cur_dir = os.path.abspath(os.curdir)
     list_dir = cur_dir.split('/')
-    
     exceeds = len(list_dir) - len(init_list)
     if exceeds > 0:
         print "Going up " + str(exceeds) + " directory levels"
@@ -144,15 +144,12 @@ def go_home_dir():
             os.chdir('..')
 
 
-
 class GraphData:
 
-
     def __init__(self):
-        
+
         self.DATA_PATH = "Data"
-        self.TAGS_PATH = self.DATA_PATH + '/' + 'tags'
-        self.CHECKOUT_PATH = self.DATA_PATH + '/' + 'checkout'
+        self.CHECKOUT_PATH = self.DATA_PATH + '/' + 'Repository'
         self.out_names = {}
         self.out_paths = {}
         self.out_files = {}
@@ -167,29 +164,26 @@ class GraphData:
         self.date_now = strftime("%Y-%m-%d", gmtime())
         self.conf_opt = {}
         self.conf_opt['v'] = True  # Verbose option (-v)
-        self.conf_opt['f'] = '1971-1-1' # Starting date of study option (-f)
-        self.conf_opt['t'] = self.date_now # Ending date opt. (-t)
-        self.conf_opt['r'] = "" # Repository URL option (-r)
+        self.conf_opt['f'] = '1971-1-1'  # Starting date of study option (-f)
+        self.conf_opt['t'] = self.date_now  # Ending date opt. (-t)
+        self.conf_opt['r'] = ""  # Repository URL option (-r)
         self.conf_opt['h'] = False  # Show help option (-h)
-
-    def log(self, log_line):
-        str_out = ""
-        log_file = open("log_file", 'a')
-        log_file.write(log_line + '\n')
-        log_file.close()
-        if self.conf_opt['v']:
-            str_out = str(log_line) + "\r\n"
-        return str_out
 
     def create_data_files(self):
             os.mkdir(self.DATA_PATH)
-            os.mkdir(self.TAGS_PATH)
             os.mkdir(self.CHECKOUT_PATH)
             for out_file in self.out_names.keys():
                 dir_to_open = self.DATA_PATH + '/' + self.out_names[out_file]
                 self.out_paths[out_file] = dir_to_open
                 self.out_files[out_file] = open(dir_to_open, 'a')
 
+    def log(self, log_line):
+        str_out = ""
+        log_file = self.out_files['log']
+        log_file.write(log_line + '\n')
+        if self.conf_opt['v']:
+            str_out = str(log_line) + "\r\n"
+        return str_out
 
     def check_program_starting(self):
         """
@@ -197,7 +191,7 @@ class GraphData:
         """
         if not under_linux():
             raise SystemExit
-        
+
         if len(sys.argv) == 1:
             print help()
             raise SystemExit
@@ -245,10 +239,9 @@ class GraphData:
             print "|-------------- REPO DOWNLOAD END --------------|\r\n"
             os.chdir("..")
             print "Going back to directory: " + os.path.abspath(os.curdir)
-    
 
     def extract_git_log(self):
-    
+
         print "|--------------- GIT LOG START -----------------|"
         commits_dir = "../" + self.DATA_PATH + "/" + self.out_names['commits']
         os.chdir("Repository")
@@ -270,44 +263,84 @@ class GraphData:
             print "File of commits empty."
             print "Please use option -h for further information"
             raise SystemExit
-        
+
         print "|---------------- GIT LOG END --------------|\r\n"
         return file_content
-        
-        
-        
-    def copy_and_move_repo(self, path_cp):
-        """
-        Copies Repository file to prevent unwanted changes
-        and moves files into previous folder
-        """
-        os.system('cp -r Repository -t' + path_cp)
-        lis_dir = os.listdir(path_cp + '/' + 'Repository')
-        for repo_file in lis_dir:
-            move = 'mv ' + path_cp + '/Repository/' + repo_file + ' ' + path_cp
-            os.system(move)
-        erase_empty = 'rm -r ' + path_cp + '/Repository'
-        os.system(erase_empty)
-        os.chdir(path_cp)
-        
 
-    def do_checkout(self, path_chk, rev):
+    def copy_repo(self, path_cp):
         """
-        Creates a directory where do a checkout with specified rev
+        Copies Repository directory (to prevent unwanted changes)
+        into specified path
+        """
+        print "|---------------- COPY REPO START --------------|\r\n"
+        go_home_dir()
+        os.system("chmod 755 Repository")
+        copy_file = 'cp -r Repository ' + path_cp
+        print "Copying: " + copy_file
+        os.system(copy_file)
+        print "|---------------- COPY REPO END --------------|\r\n"
+
+    def do_checkout(self, rev):
+        """
+        Creates a directory (if it doesnt't exist yet)
+        where do a checkout with specified rev
         """
         print "|---------------- GIT CHEKOUT START --------------|\r\n"
-        dir_co = my_graph.CHECKOUT_PATH + '/' + rev1
-        os.mkdir(dir_co)
-        self.copy_and_move_repo(dir_co)
-        to_exe = 'git checkout -f ' + start_line.split()[1]
+        dir_co = my_graph.CHECKOUT_PATH
+        go_home_dir()
+        os.chdir(dir_co)
+        to_exe = 'git checkout -f ' + rev
         print "Executing: " + to_exe
         os.system(to_exe)
         go_home_dir()
         print "|---------------- GIT CHECKOUT END --------------|\r\n"
-        
-        
-    def findFittingTag(self, file_compare, ln_num, rev, author, verbose):
-    
+
+    def do_diff(self, rev):
+        """
+        Does git diff from specified rev
+        """
+        print "|---------------- GIT DIFF START --------------|\r\n"
+        go_home_dir()
+        os.chdir(self.CHECKOUT_PATH)
+        to_exe = ['git', 'diff', '--unified=0', rev + "^!"]
+        entireDiff = subprocess.check_output(to_exe)
+        go_home_dir()
+        diff_path = self.DATA_PATH + '/' + self.out_names['diff']
+        self.out_files['diff'].close()
+        self.out_files['diff'] = open(diff_path, 'w')
+        self.out_files['diff'].write(entireDiff)
+        self.out_files['diff'].close()
+        self.out_files['diff'] = open(diff_path, 'r')
+        resultDiff = self.out_files['diff'].readlines()
+        self.out_files['diff'].close()
+        print "|---------------- GIT DIFF END --------------|\r\n"
+        return resultDiff
+
+    def create_tags_file(self):
+        """
+        Creates tags file with ctags if it doesn't exist,
+        otherwise just update it.
+        """
+        os.chdir(my_graph.CHECKOUT_PATH)
+        print "Executing: ctags -w -R -n . >> 2&>1"
+        #Getting rid of annoying warning output with options in command
+        os.system('ctags -w -R -n . >> 2&>1')
+        go_home_dir()
+
+    def extract_rev_auth(self, line_to_extract):
+        """
+        Extracts from a commit-file line rev and author
+        """
+        line = line_to_extract.split()
+        rev = line[0]
+        line = " ".join(line[1:])
+        line = line.split("Date")
+        line = line[0].split()
+        author = line[1]
+        return [rev, author]
+
+    def findFittingTag(self, file_compare, ln_num, rev, author):
+
         """
         # First argument: file to compare
         # Second argument: line number
@@ -316,11 +349,7 @@ class GraphData:
         """
 
         command1 = ["grep", file_compare, "tags"]
-       
-
         return 1
-
-    
 
 
 if __name__ == "__main__":
@@ -334,78 +363,57 @@ if __name__ == "__main__":
     my_graph = GraphData()
 
     extract_options(sys.argv, my_graph.conf_opt)
-    # Checking existance of Repository; we need it!
     my_graph.check_program_starting()
     my_graph.create_data_files()
 
-    # Check introduced parameters
     my_graph.check_options()
-
-    # First: git clone: project as a parameter
-    # -------- git clone url folder-name ----------------
     my_graph.download_repo()
-    
-    # Now we read the first line of the file with the commit revs
 
-    print "Reading first line and checking out from first commit"
+    print my_graph.log("Reading first line and checking out from first commit")
     commit_lines = my_graph.extract_git_log()
 
     start_line = commit_lines[0]
     print my_graph.log("First line: " + start_line)
     rev1 = start_line.split()[1]
-    
-    my_graph.do_checkout(my_graph.CHECKOUT_PATH, rev1)
-    
-    print "Break-point"
-    raise SystemExit
+    print my_graph.log("First checkout")
 
-    print  "Creating tags file: tags"
-    # Do this if ctags does not exist, otherwise just update it
-    # Getting rid of annoying warning output
-    print "Executing: ctags -w -R -n . >> 2&>1 > output_file"
-    os.system('ctags -w -R -n . >> 2&>1 > output_file')
+    my_graph.copy_repo(my_graph.DATA_PATH)
+    my_graph.do_checkout(rev1)
+
+    my_graph.log("Creating tags file: tags")
+    my_graph.create_tags_file()
 
     # From 'archivoDeCommitsDesdeScript.txt' file
     # get file and line of change,
     # and then get tag, we have to update
 
-    fich = open(commits_file, 'r')
-    commit_lines = " ".join(fich.readlines())
-    commit_lines = commit_lines.split("commit ")
+    commit_lines_format = " ".join(commit_lines)
+    commit_lines_format = commit_lines_format.split("commit ")
+
+    # Initial asignment for in-loop variables
     rev = ""
     author = ""
     file1 = ""
     lineNumber1 = ""
-    for line in commit_lines:
+
+    for line in commit_lines_format:
         if line != "":
             # Extracting info: commit-id and author
-            print my_graph.log(verbose, "NEW LINE: " + line)
-            line = line.split()
-            rev = line[0]
-            line = " ".join(line[1:])
-            line = line.split("Date")
-            line = line[0].split()
-            author = line[1]
+            #print my_graph.log("NEW LINE: " + line)
+            rev_author = my_graph.extract_rev_auth(line)
 
-            print my_graph.log(verbose, "Author: " + author)
-            to_exe = ['git','diff', '--unified=0', rev + "^!"]
-            entireDiff = subprocess.check_output(to_exe)
-            fich_diff = open("diff_file", 'w')
-            fich_diff.write(entireDiff)
-            fich_diff.close()
-            to_exe = 'git checkout ' + rev
-            os.system(to_exe)
+            print my_graph.log("Rev: " + rev_author[0])
+            print my_graph.log("Author: " + rev_author[1])
 
-            fich_diff = open("diff_file", 'r')
-            entireDiff_lines = fich_diff.readlines()
-            fich_diff.close()
-            
-            allFiles = open("allFiles_file", 'a')
-            for grepline in entireDiff_lines:
-      ### Getting rid of all lines we dont care about
-      ### We only want this when we don't need to read the output of git diff, 
-      ### but only the files modified ###   
+            outdiff = my_graph.do_diff(rev_author[0])
+            my_graph.do_checkout(rev_author[0])
 
+            ### Getting rid of all lines we dont care about
+            ### We only want this when we don't need to read
+            ### the output of git diff, but only the files modified ###
+
+            allFiles = my_graph.out_files['allFiles']
+            for grepline in outdiff:
                 if grepline[0] != '+' and grepline[0] != '-':
                     grepline_data = grepline.split()
                     if grepline_data[0] == "diff":
@@ -420,37 +428,11 @@ if __name__ == "__main__":
 
                     if file1 == "":
                         lastFile2 = file1
-                        print my_graph.log(verbose, "File: " + file1)
-    
+                        print my_graph.log("File: " + file1)
+
                     if lineNumber1 == "":
-                        # When grep is empty, we add a tag -> 
+                        # When grep is empty, we add a tag ->
                         # it will be a file-to-file collaboration
                         lastFile2 = file1
                         out1 = my_graph.findFittingTag(lastFile2, lineNumber1,
-                                                rev, author, verbose)
-                        #Value of lastFile2 in other case?
-
-            print "Tag and committer added to output file"
-            print "Now updating ctags file"
-            ## HERE UPDATING TAGS FILE WITH TAGS OF MODIFIED FILES
-
-            allFiles.close()
-            allFiles_data = open("allFiles_file", 'r')
-            allFiles_lines = allFiles_data.readlines()
-
-            for file_line in allFiles_lines:
-                print my_graph.log(verbose, "FILE: " + file_line)
-                # FIXME: avoid absolute path!
-                to_exe_tmp = "ctags -f auxTags_file -n /Data/ctags"
-                to_exe_tmp += file_line
-                # ctags warning: can't open such file or directory
-                print "Executing: " + to_exe_tmp
-                os.system(to_exe_tmp)
-                # remove comment lines from the just-created tag file
-                rmv_cmt1 = 'perl -n -i.bak -e "print unless '
-                rmv_cmt1 += '/_TAG_FILE_/" auxTags_file'
-                os.system(rmv_cmt1)
-
-                rmv_cmt2 = 'perl -n -i.bak -e "print unless '
-                rmv_cmt2 += '/_TAG_PROGRAM_/" auxTags_file'
-                os.system(rmv_cmt2)
+                                                       rev, author)
