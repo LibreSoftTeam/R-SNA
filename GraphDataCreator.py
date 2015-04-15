@@ -321,7 +321,7 @@ class GraphData:
         Creates tags file with ctags if it doesn't exist,
         otherwise just update it.
         """
-        os.chdir(my_graph.CHECKOUT_PATH)
+        os.chdir(self.CHECKOUT_PATH)
         print "Executing: ctags -w -R -n . >> 2&>1"
         #Getting rid of annoying warning output with options in command
         os.system('ctags -w -R -n . >> 2&>1')
@@ -339,6 +339,40 @@ class GraphData:
         author = line[1]
         return [rev, author]
 
+    def grepline_info(self, grepline):
+        """
+        Extracts file name and/or a line number from a line of diff.txt
+        """
+        file1 = ""
+        lineNumber1 = ""
+        if grepline[0] != '+' and grepline[0] != '-':
+                    grepline_data = grepline.split()
+                    if grepline_data[0] == "diff":
+                        for data in grepline_data:
+                            if (data[0] == 'b') and (data[1] == '/'):
+                                file1 = data[2:]
+                                allFiles.write(file1 + '\n')
+                    elif grepline_data[0] == "@@":
+                        for data in grepline_data:
+                            if data[0] == "+":
+                                lineNumber1 = data[1:]
+        return [file1, lineNumber1]
+    
+    def extract_file_names(self, diff):
+        file_names = []
+        for line in diff:
+            if line != "":
+                line_list = line.split()
+                if len(line_list) > 2:
+                    cond1 = line_list[0] == 'diff'
+                    cond2 = line_list[1] == '--git'
+                    if cond1 and cond2:
+                        fname = line_list[3]
+                        file_names.append(fname[2:])
+        return file_names
+                        
+                
+
     def findFittingTag(self, file_compare, ln_num, rev, author):
 
         """
@@ -347,8 +381,92 @@ class GraphData:
         # Third argument: rev
         # Fourth argument: author
         """
+        print "|---------------- FIND FITTING TAG START --------------|\r\n"
 
-        command1 = ["grep", file_compare, "tags"]
+        go_home_dir()
+        os.chdir(self.CHECKOUT_PATH)
+        matches = ""
+        file_list = os.listdir(os.curdir)
+        if file_compare in file_list:
+            command1 = "grep " + file_compare + " tags"
+            print self.log("Executing: " + command1)
+            try:
+                matches = subprocess.check_output(command1.split())
+            except subprocess.CalledProcessError:
+                print "Error with grep-ctags"
+                matches = ""
+        #Case of not matching any tag
+        if matches == "":
+            #In this case the output has three fields (no tag)
+            #log: "Adding file tag"
+            line = rev + "," + file_compare + "," + author
+            fich = self.out_files['output']
+            fich.write(line + '\n')
+            #? Even if file isn't in folder?
+        else:
+            fittingLine = ""
+            bestNumber = ""
+
+            # This While loop calculates the method where the line number
+            # received belongs to
+
+            matches_lines = matches.split('\n')
+            for match_line in matches_lines:
+                if match_line != "":
+                    match_list = match_line.split()
+
+                    # We have a line like this: AUDIO_FILE uaserver.py 26;" v
+                    fMatch = match_list[1]
+                    ext = match_list[1].split('.')[-1]
+                    specialExt = False
+
+                    """
+                    lines depending on language
+                    case ext in cs|java|js|m|mm
+                        specialExt = True
+                    esac
+                    """
+
+                    # Fourth parameter in tags file holds the type of tag
+                    isAFunction = match_list[3]
+
+                    # Take #4 parameter, which is type of method in tags
+                    condition1 = specialExt and (isAFunction == 'm')
+                    condition2 = not specialExt and (isAFunction == 'f')
+                    if (condition1 or condition2):
+                        log_line = "We are in a function-> f: "
+                        log_line += fMatch + "ext: " + ext 
+                        log_line += "Spec: " + str(specialExt) + " tag: " + str(isAFunction)
+                        print self.log(log_line)
+                        
+                        # Removing two last chars from third field to get the line number
+                        lineNumber = match_list[3][:-2]
+                        
+                        # Case of methods matching 
+                        if fittingLine == "":
+                            if lineNumber > ln_num:
+                                fittingLine = match_line
+                                bestNumber = lineNumber
+                        else:
+                            if ((lineNumber > ln_num) and (lineNumber < bestNumber)):
+                                fittingLine = match_line
+                                bestNumber = lineNumber
+
+            # Not sure of this
+            if fittingLine != "":
+                log_line = "..and fitting line has been: " + fittingLine
+                print self.log(log_line)
+                tagToWrite = fittingLine.split()[0]
+
+                # Adding tag to output file
+                log_line = "Adding " + file_compare + ' ' + tagToWrite
+                log_line += "to output_file"
+                line = rev + "," + file_compare + ' ' + tagToWrite + "," + author
+                fich.write(line + '\n')
+                print self.log(log_line)
+            go_home_dir()
+
+        print "|---------------- FIND FITTING TAG END --------------|\r\n"
         return 1
 
 
@@ -358,7 +476,9 @@ if __name__ == "__main__":
     # FIXME: all these variables should start with conf_ // Done (Dictionary)
     # Initialising options. FIXME: conf_ variables! // Done
     # FIXME: check if there is a data subdirectory as well! // Done
-
+    
+    os.system("sudo rm -r Repository")
+    os.system("sudo rm -r Data")
     # Instance of Graph class
     my_graph = GraphData()
 
@@ -408,31 +528,37 @@ if __name__ == "__main__":
             outdiff = my_graph.do_diff(rev_author[0])
             my_graph.do_checkout(rev_author[0])
 
-            ### Getting rid of all lines we dont care about
-            ### We only want this when we don't need to read
-            ### the output of git diff, but only the files modified ###
-
+            lastFile2 = ""
             allFiles = my_graph.out_files['allFiles']
             for grepline in outdiff:
-                if grepline[0] != '+' and grepline[0] != '-':
-                    grepline_data = grepline.split()
-                    if grepline_data[0] == "diff":
-                        for data in grepline_data:
-                            if (data[0] == 'b') and (data[1] == '/'):
-                                file1 = data[2:]
-                                allFiles.write(file1 + '\n')
-                    elif grepline_data[0] == "@@":
-                        for data in grepline_data:
-                            if data[0] == "+":
-                                lineNumber1 = data[1:]
+                info_grep = my_graph.grepline_info(grepline)
+                file_name = info_grep[0]
+                line_number = info_grep[1].split(',')[-1]
+                if file_name != "":
+                    print my_graph.log("File: " + file_name)
+                    lastFile2 = file_name
+                if (line_number != "") and (lastFile2 != ""):
+                    # When grep is empty, we add a tag ->
+                    # it will be a file-to-file collaboration
+                    print my_graph.log("Line number: " + line_number)
+                    out1 = my_graph.findFittingTag(lastFile2, line_number,
+                                                   rev_author[0], 
+                                                   rev_author[1])
 
-                    if file1 == "":
-                        lastFile2 = file1
-                        print my_graph.log("File: " + file1)
+            # FIXME: This has to be in allFiles.txt also
 
-                    if lineNumber1 == "":
-                        # When grep is empty, we add a tag ->
-                        # it will be a file-to-file collaboration
-                        lastFile2 = file1
-                        out1 = my_graph.findFittingTag(lastFile2, lineNumber1,
-                                                       rev, author)
+            print my_graph.log("Tag and committer added to output file")
+            print my_graph.log("Now updating ctags file")
+            ## HERE UPDATING TAGS FILE WITH TAGS OF MODIFIED FILES
+            all_files = my_graph.extract_file_names(outdiff)
+            go_home_dir()
+            os.chdir(my_graph.CHECKOUT_PATH)
+            current_files = os.listdir(os.curdir)
+            for fileModifiedTag in all_files:
+                if fileModifiedTag in current_files:
+                    print my_graph.log("FILE: " + fileModifiedTag)
+                    upd_ctags = "ctags -f " + my_graph.out_names['auxTag']
+                    upd_ctags += " -n " + fileModifiedTag
+                    print my_graph.log("Executing: " + upd_ctags)
+                    os.system(upd_ctags)
+         
