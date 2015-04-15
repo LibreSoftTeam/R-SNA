@@ -476,9 +476,7 @@ if __name__ == "__main__":
     # FIXME: all these variables should start with conf_ // Done (Dictionary)
     # Initialising options. FIXME: conf_ variables! // Done
     # FIXME: check if there is a data subdirectory as well! // Done
-    
-    os.system("sudo rm -r Repository")
-    os.system("sudo rm -r Data")
+
     # Instance of Graph class
     my_graph = GraphData()
 
