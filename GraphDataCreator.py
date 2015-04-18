@@ -9,6 +9,7 @@ import os
 import sys
 from time import strftime, gmtime
 import subprocess
+import shutil
 
 print " - Graph Data Creator Started - "
 print " - MAKE SURE CTAGS, PERL AND GIT ARE INSTALLED IN YOUR COMPUTER\r\n"
@@ -125,9 +126,17 @@ def dir_exists(directory):
     """
     if os.path.exists(directory):
         print "Please, remove directory '" + directory + "' before starting"
-        return 1
+        print "Do you want to remove directory '" + directory + "'? (Y / n)"
+        ans = raw_input()
+        if (ans == 'Y') or (ans == 'y'):
+            print "Removing directory: " + directory
+            shutil.rmtree(directory, ignore_errors=True)
+            out = 0
+        else:
+            out = 1
     else:
-        return 0
+        out = 0
+    return out
 
 
 def go_home_dir():
@@ -143,6 +152,15 @@ def go_home_dir():
         for i in range(exceeds):
             os.chdir('..')
 
+
+def add_backslash(line):
+    line2 = ""
+    for char in line:
+        if char == '/':
+            line2 += '\\' + char
+        else:
+            line2 += char
+    return line2
 
 class GraphData:
 
@@ -351,7 +369,6 @@ class GraphData:
                         for data in grepline_data:
                             if (data[0] == 'b') and (data[1] == '/'):
                                 file1 = data[2:]
-                                allFiles.write(file1 + '\n')
                     elif grepline_data[0] == "@@":
                         for data in grepline_data:
                             if data[0] == "+":
@@ -360,6 +377,7 @@ class GraphData:
     
     def extract_file_names(self, diff):
         file_names = []
+        fich = self.out_files['allFiles']
         for line in diff:
             if line != "":
                 line_list = line.split()
@@ -369,9 +387,50 @@ class GraphData:
                     if cond1 and cond2:
                         fname = line_list[3]
                         file_names.append(fname[2:])
+                        fich.write(fname[2:])
+                        
         return file_names
                         
-                
+    def rm_comment_lines(self, file_name):
+        """
+        Removes unnecessary lines from a tag file
+        (/_TAG_FILE_/ and /_TAG_PROGRAM_/ or
+        !_TAG_FILE_/ and !_TAG_PROGRAM_/ lines)
+        """
+        op1 = "!_TAG_"
+        op2 = "/_TAG_"
+        fich = open(file_name, 'r')
+        lines = fich.readlines()
+        fich.close()
+        lines_ok = []
+        for line in lines:
+            line_list1 = line.split(op1)
+            line_list2 = line.split(op2)
+            if not ((len(line_list1) > 1) or (len(line_list2) > 1)):
+                lines_ok.append(line)
+        fich = open(file_name, 'w')
+
+        for new_line in lines_ok:
+            fich.write(new_line)
+        fich.close
+        return lines_ok
+
+    def print_unless(self, text, file_name):
+
+        fich = open(file_name, 'r')
+        lines = fich.readlines()
+        fich.close()
+        lines_ok = []
+        for line in lines:
+            line_list = line.split(text)
+            if not (len(line_list) > 1):
+                lines_ok.append(line)
+        fich = open(file_name, 'w')
+
+        for new_line in lines_ok:
+            fich.write(new_line)
+        fich.close
+        return lines_ok
 
     def findFittingTag(self, file_compare, ln_num, rev, author):
 
@@ -387,6 +446,7 @@ class GraphData:
         os.chdir(self.CHECKOUT_PATH)
         matches = ""
         file_list = os.listdir(os.curdir)
+        fich = self.out_files['output']
         if file_compare in file_list:
             command1 = "grep " + file_compare + " tags"
             print self.log("Executing: " + command1)
@@ -400,7 +460,6 @@ class GraphData:
             #In this case the output has three fields (no tag)
             #log: "Adding file tag"
             line = rev + "," + file_compare + "," + author
-            fich = self.out_files['output']
             fich.write(line + '\n')
             #? Even if file isn't in folder?
         else:
@@ -552,6 +611,7 @@ if __name__ == "__main__":
             go_home_dir()
             os.chdir(my_graph.CHECKOUT_PATH)
             current_files = os.listdir(os.curdir)
+
             for fileModifiedTag in all_files:
                 if fileModifiedTag in current_files:
                     print my_graph.log("FILE: " + fileModifiedTag)
@@ -559,4 +619,24 @@ if __name__ == "__main__":
                     upd_ctags += " -n " + fileModifiedTag
                     print my_graph.log("Executing: " + upd_ctags)
                     os.system(upd_ctags)
-         
+                    # remove comment lines from the just-created tag file
+                    auxTag_nm = my_graph.out_names['auxTag']
+                    lines_ok = my_graph.print_unless("!_TAG_", auxTag_nm)
+                    lines_ok = my_graph.print_unless("/_TAG_", auxTag_nm)
+                    # remove lines of that file in tags file
+                    # adding backslash to scape slash before removing
+                    second = add_backslash(fileModifiedTag)
+                    print my_graph.log("second: " + str(second))
+                    clean_lines = my_graph.print_unless(second, 'tags')
+                    # FIXME: Some log lines not added yet
+                    #add new lines
+                    fich_tags = open('tags', 'a')
+                    for line_ok in lines_ok:
+                        fich_tags.write(line_ok)
+                    fich_tags.close()
+                    info = "Tags added to tags file: now is up to date"
+                    print my_graph.log(info)
+                        
+                    
+
+                    
