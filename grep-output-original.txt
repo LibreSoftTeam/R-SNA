@@ -1,0 +1,652 @@
+Grepline: @@ -2,3 +2,3 @@
+New call: pr.xml ,2,9b65c4ffbc8b9f5764b4e0ea000f678ec160b6c0, mghfdez
+Grepline: @@ -3 +3 @@
+New call: ua2.xml ,3,91693cc4b00893e1f1a413dc772deeaaa6318548, mghfdez
+Grepline: @@ -5 +5 @@
+New call: ua2.xml ,5,91693cc4b00893e1f1a413dc772deeaaa6318548, mghfdez
+Grepline: @@ -5 +5 @@
+New call: ua1.xml ,5,ae8f2e5ff3772fc64910f441ffbf65fe67e739f1, mghfdez
+Grepline: @@ -6,2 +6,2 @@
+New call: ua2.xml ,6,7ceed36b61a28a7a9e7a17c19e838db9b7729ac4, mghfdez
+Grepline: @@ -6,2 +6,2 @@
+New call: ua1.xml ,6,bab60bb33944d769fe2f1aa8e573476d4c406c06, mghfdez
+Grepline: @@ -7 +7,2 @@ Clase (y programa principal) para un servidor SIP
+New call: uaserver.py ,7,1dcc6d67532f88edf1706916b6ba67557677190c, mghfdez
+Grepline: @@ -27,3 +28,2 @@ class SIPConfigHandler(ContentHandler):
+New call: uaserver.py ,28,1dcc6d67532f88edf1706916b6ba67557677190c, mghfdez
+Grepline: @@ -34,2 +34 @@ class SIPConfigHandler(ContentHandler):
+New call: uaserver.py ,34,1dcc6d67532f88edf1706916b6ba67557677190c, mghfdez
+Grepline: @@ -38 +36,0 @@ class SIPConfigHandler(ContentHandler):
+New call: uaserver.py ,36,1dcc6d67532f88edf1706916b6ba67557677190c, mghfdez
+Grepline: @@ -53 +50,0 @@ class SIPConfigHandler(ContentHandler):
+New call: uaserver.py ,50,1dcc6d67532f88edf1706916b6ba67557677190c, mghfdez
+Grepline: @@ -60,0 +58 @@ class SIPConfigHandler(ContentHandler):
+New call: uaserver.py ,58,1dcc6d67532f88edf1706916b6ba67557677190c, mghfdez
+Grepline: @@ -76 +74,2 @@ class SIPConfigLocal:
+New call: uaserver.py ,74,1dcc6d67532f88edf1706916b6ba67557677190c, mghfdez
+Grepline: @@ -78 +77 @@ class SIPConfigLocal:
+New call: uaserver.py ,77,1dcc6d67532f88edf1706916b6ba67557677190c, mghfdez
+Grepline: @@ -106 +105 @@ class SIPHandler(SocketServer.DatagramRequestHandler):
+New call: uaserver.py ,105,1dcc6d67532f88edf1706916b6ba67557677190c, mghfdez
+Grepline: @@ -119,2 +118,2 @@ class SIPHandler(SocketServer.DatagramRequestHandler):
+New call: uaserver.py ,118,1dcc6d67532f88edf1706916b6ba67557677190c, mghfdez
+Grepline: @@ -122,2 +121,3 @@ class SIPHandler(SocketServer.DatagramRequestHandler):
+New call: uaserver.py ,121,1dcc6d67532f88edf1706916b6ba67557677190c, mghfdez
+Grepline: @@ -124,0 +125 @@ class SIPHandler(SocketServer.DatagramRequestHandler):
+New call: uaserver.py ,125,1dcc6d67532f88edf1706916b6ba67557677190c, mghfdez
+Grepline: @@ -149,2 +150,2 @@ class SIPHandler(SocketServer.DatagramRequestHandler):
+New call: uaserver.py ,150,1dcc6d67532f88edf1706916b6ba67557677190c, mghfdez
+Grepline: @@ -156,2 +157,2 @@ class SIPHandler(SocketServer.DatagramRequestHandler):
+New call: uaserver.py ,157,1dcc6d67532f88edf1706916b6ba67557677190c, mghfdez
+Grepline: @@ -169 +170 @@ class SIPHandler(SocketServer.DatagramRequestHandler):
+New call: uaserver.py ,170,1dcc6d67532f88edf1706916b6ba67557677190c, mghfdez
+Grepline: @@ -174,2 +175,3 @@ class SIPHandler(SocketServer.DatagramRequestHandler):
+New call: uaserver.py ,175,1dcc6d67532f88edf1706916b6ba67557677190c, mghfdez
+Grepline: @@ -204,3 +206 @@ if __name__ == "__main__":
+New call: uaserver.py ,206,1dcc6d67532f88edf1706916b6ba67557677190c, mghfdez
+Grepline: @@ -8 +7,0 @@ Programa cliente que abre un socket a un servidor
+New call: uaclient.py ,7,17cb94e90cb37d3c195d005a7653afadd2997625, mghfdez
+Grepline: @@ -16,0 +16 @@ from xml.sax.handler import ContentHandler
+New call: uaclient.py ,16,17cb94e90cb37d3c195d005a7653afadd2997625, mghfdez
+Grepline: @@ -25,3 +25,2 @@ class SIPConfigHandler(ContentHandler):
+New call: uaclient.py ,25,17cb94e90cb37d3c195d005a7653afadd2997625, mghfdez
+Grepline: @@ -36 +34,0 @@ class SIPConfigHandler(ContentHandler):
+New call: uaclient.py ,34,17cb94e90cb37d3c195d005a7653afadd2997625, mghfdez
+Grepline: @@ -51 +48,0 @@ class SIPConfigHandler(ContentHandler):
+New call: uaclient.py ,48,17cb94e90cb37d3c195d005a7653afadd2997625, mghfdez
+Grepline: @@ -58,0 +56 @@ class SIPConfigHandler(ContentHandler):
+New call: uaclient.py ,56,17cb94e90cb37d3c195d005a7653afadd2997625, mghfdez
+Grepline: @@ -74 +72,2 @@ class SIPConfigLocal:
+New call: uaclient.py ,72,17cb94e90cb37d3c195d005a7653afadd2997625, mghfdez
+Grepline: @@ -76 +75 @@ class SIPConfigLocal:
+New call: uaclient.py ,75,17cb94e90cb37d3c195d005a7653afadd2997625, mghfdez
+Grepline: @@ -79,0 +79 @@ class SIPConfigLocal:
+New call: uaclient.py ,79,17cb94e90cb37d3c195d005a7653afadd2997625, mghfdez
+Grepline: @@ -84 +84 @@ class LogConfig:
+New call: uaclient.py ,84,17cb94e90cb37d3c195d005a7653afadd2997625, mghfdez
+Grepline: @@ -89 +88,0 @@ class LogConfig:
+New call: uaclient.py ,88,17cb94e90cb37d3c195d005a7653afadd2997625, mghfdez
+Grepline: @@ -95 +93,0 @@ class LogConfig:
+New call: uaclient.py ,93,17cb94e90cb37d3c195d005a7653afadd2997625, mghfdez
+Grepline: @@ -99 +97 @@ class LogConfig:
+New call: uaclient.py ,97,17cb94e90cb37d3c195d005a7653afadd2997625, mghfdez
+Grepline: @@ -114 +112 @@ class LogConfig:
+New call: uaclient.py ,112,17cb94e90cb37d3c195d005a7653afadd2997625, mghfdez
+Grepline: @@ -119 +117 @@ if __name__ == "__main__":
+New call: uaclient.py ,117,17cb94e90cb37d3c195d005a7653afadd2997625, mghfdez
+Grepline: @@ -121 +119 @@ if __name__ == "__main__":
+New call: uaclient.py ,119,17cb94e90cb37d3c195d005a7653afadd2997625, mghfdez
+Grepline: @@ -144,3 +142,8 @@ if __name__ == "__main__":
+New call: uaclient.py ,142,17cb94e90cb37d3c195d005a7653afadd2997625, mghfdez
+Grepline: @@ -168 +171 @@ if __name__ == "__main__":
+New call: uaclient.py ,171,17cb94e90cb37d3c195d005a7653afadd2997625, mghfdez
+Grepline: @@ -179 +181,0 @@ if __name__ == "__main__":
+New call: uaclient.py ,181,17cb94e90cb37d3c195d005a7653afadd2997625, mghfdez
+Grepline: @@ -194 +196 @@ if __name__ == "__main__":
+New call: uaclient.py ,196,17cb94e90cb37d3c195d005a7653afadd2997625, mghfdez
+Grepline: @@ -212 +214 @@ if __name__ == "__main__":
+New call: uaclient.py ,214,17cb94e90cb37d3c195d005a7653afadd2997625, mghfdez
+Grepline: @@ -215 +216,0 @@ if __name__ == "__main__":
+New call: uaclient.py ,216,17cb94e90cb37d3c195d005a7653afadd2997625, mghfdez
+Grepline: @@ -216,0 +218 @@ if __name__ == "__main__":
+New call: uaclient.py ,218,17cb94e90cb37d3c195d005a7653afadd2997625, mghfdez
+Grepline: @@ -218,3 +220,3 @@ if __name__ == "__main__":
+New call: uaclient.py ,220,17cb94e90cb37d3c195d005a7653afadd2997625, mghfdez
+Grepline: @@ -222 +224 @@ if __name__ == "__main__":
+New call: uaclient.py ,224,17cb94e90cb37d3c195d005a7653afadd2997625, mghfdez
+Grepline: @@ -243 +245 @@ if __name__ == "__main__":
+New call: uaclient.py ,245,17cb94e90cb37d3c195d005a7653afadd2997625, mghfdez
+Grepline: @@ -247,0 +250 @@ if __name__ == "__main__":
+New call: uaclient.py ,250,17cb94e90cb37d3c195d005a7653afadd2997625, mghfdez
+Grepline: @@ -256 +259,3 @@ if __name__ == "__main__":
+New call: uaclient.py ,259,17cb94e90cb37d3c195d005a7653afadd2997625, mghfdez
+Grepline: @@ -265 +270 @@ if __name__ == "__main__":
+New call: uaclient.py ,270,17cb94e90cb37d3c195d005a7653afadd2997625, mghfdez
+Grepline: @@ -267 +271,0 @@ if __name__ == "__main__":
+New call: uaclient.py ,271,17cb94e90cb37d3c195d005a7653afadd2997625, mghfdez
+Grepline: @@ -18,0 +19 @@ import uaclient
+New call: proxy_registrar.py ,19,d72864d5751979f9583fdeb1d69260e2f35e5ecb, mghfdez
+Grepline: @@ -27,3 +28,2 @@ class SIPConfigHandler(ContentHandler):
+New call: proxy_registrar.py ,28,d72864d5751979f9583fdeb1d69260e2f35e5ecb, mghfdez
+Grepline: @@ -31 +31 @@ class SIPConfigHandler(ContentHandler):
+New call: proxy_registrar.py ,31,d72864d5751979f9583fdeb1d69260e2f35e5ecb, mghfdez
+Grepline: @@ -35 +34,0 @@ class SIPConfigHandler(ContentHandler):
+New call: proxy_registrar.py ,34,d72864d5751979f9583fdeb1d69260e2f35e5ecb, mghfdez
+Grepline: @@ -50 +48,0 @@ class SIPConfigHandler(ContentHandler):
+New call: proxy_registrar.py ,48,d72864d5751979f9583fdeb1d69260e2f35e5ecb, mghfdez
+Grepline: @@ -57,0 +56 @@ class SIPConfigHandler(ContentHandler):
+New call: proxy_registrar.py ,56,d72864d5751979f9583fdeb1d69260e2f35e5ecb, mghfdez
+Grepline: @@ -73 +72,2 @@ class SIPConfigLocal:
+New call: proxy_registrar.py ,72,d72864d5751979f9583fdeb1d69260e2f35e5ecb, mghfdez
+Grepline: @@ -75 +75 @@ class SIPConfigLocal:
+New call: proxy_registrar.py ,75,d72864d5751979f9583fdeb1d69260e2f35e5ecb, mghfdez
+Grepline: @@ -107 +107 @@ class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
+New call: proxy_registrar.py ,107,d72864d5751979f9583fdeb1d69260e2f35e5ecb, mghfdez
+Grepline: @@ -113 +113 @@ class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
+New call: proxy_registrar.py ,113,d72864d5751979f9583fdeb1d69260e2f35e5ecb, mghfdez
+Grepline: @@ -117 +117,2 @@ class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
+New call: proxy_registrar.py ,117,d72864d5751979f9583fdeb1d69260e2f35e5ecb, mghfdez
+Grepline: @@ -121,3 +122,5 @@ class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
+New call: proxy_registrar.py ,122,d72864d5751979f9583fdeb1d69260e2f35e5ecb, mghfdez
+Grepline: @@ -135,0 +139,2 @@ class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
+New call: proxy_registrar.py ,139,d72864d5751979f9583fdeb1d69260e2f35e5ecb, mghfdez
+Grepline: @@ -139 +144,3 @@ class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
+New call: proxy_registrar.py ,144,d72864d5751979f9583fdeb1d69260e2f35e5ecb, mghfdez
+Grepline: @@ -142 +148,0 @@ class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
+New call: proxy_registrar.py ,148,d72864d5751979f9583fdeb1d69260e2f35e5ecb, mghfdez
+Grepline: @@ -151 +157,2 @@ class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
+New call: proxy_registrar.py ,157,d72864d5751979f9583fdeb1d69260e2f35e5ecb, mghfdez
+Grepline: @@ -153,3 +160,5 @@ class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
+New call: proxy_registrar.py ,160,d72864d5751979f9583fdeb1d69260e2f35e5ecb, mghfdez
+Grepline: @@ -161 +170,3 @@ class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
+New call: proxy_registrar.py ,170,d72864d5751979f9583fdeb1d69260e2f35e5ecb, mghfdez
+Grepline: @@ -166 +177,2 @@ class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
+New call: proxy_registrar.py ,177,d72864d5751979f9583fdeb1d69260e2f35e5ecb, mghfdez
+Grepline: @@ -168 +180 @@ class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
+New call: proxy_registrar.py ,180,d72864d5751979f9583fdeb1d69260e2f35e5ecb, mghfdez
+Grepline: @@ -173,2 +185,11 @@ class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
+New call: proxy_registrar.py ,185,d72864d5751979f9583fdeb1d69260e2f35e5ecb, mghfdez
+Grepline: @@ -181,2 +202,24 @@ class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
+New call: proxy_registrar.py ,202,d72864d5751979f9583fdeb1d69260e2f35e5ecb, mghfdez
+Grepline: @@ -184,10 +227,26 @@ class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
+New call: proxy_registrar.py ,227,d72864d5751979f9583fdeb1d69260e2f35e5ecb, mghfdez
+Grepline: @@ -202,2 +261,4 @@ class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
+New call: proxy_registrar.py ,261,d72864d5751979f9583fdeb1d69260e2f35e5ecb, mghfdez
+Grepline: @@ -205,3 +266,12 @@ class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
+New call: proxy_registrar.py ,266,d72864d5751979f9583fdeb1d69260e2f35e5ecb, mghfdez
+Grepline: @@ -216,2 +286,4 @@ class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
+New call: proxy_registrar.py ,286,d72864d5751979f9583fdeb1d69260e2f35e5ecb, mghfdez
+Grepline: @@ -219,9 +291,19 @@ class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
+New call: proxy_registrar.py ,291,d72864d5751979f9583fdeb1d69260e2f35e5ecb, mghfdez
+Grepline: @@ -229,0 +312 @@ class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
+New call: proxy_registrar.py ,312,d72864d5751979f9583fdeb1d69260e2f35e5ecb, mghfdez
+Grepline: @@ -232 +315 @@ class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
+New call: proxy_registrar.py ,315,d72864d5751979f9583fdeb1d69260e2f35e5ecb, mghfdez
+Grepline: @@ -257,2 +340,7 @@ if __name__ == "__main__":
+New call: proxy_registrar.py ,340,d72864d5751979f9583fdeb1d69260e2f35e5ecb, mghfdez
+Grepline: @@ -260,0 +349 @@ if __name__ == "__main__":
+New call: proxy_registrar.py ,349,d72864d5751979f9583fdeb1d69260e2f35e5ecb, mghfdez
+Grepline: @@ -271,0 +361,3 @@ if __name__ == "__main__":
+New call: proxy_registrar.py ,361,d72864d5751979f9583fdeb1d69260e2f35e5ecb, mghfdez
+Grepline: @@ -9,0 +10 @@ import time
+New call: proxy_registrar.py ,10,7a6b1e775492c821fd5cb67551e8dbbbf8eff6a7, igarag
+Grepline: @@ -14 +14,0 @@ from xml.sax.handler import ContentHandler
+New call: proxy_registrar.py ,14,7a6b1e775492c821fd5cb67551e8dbbbf8eff6a7, igarag
+Grepline: @@ -17,2 +17,3 @@ dic_user = {}
+New call: proxy_registrar.py ,17,7a6b1e775492c821fd5cb67551e8dbbbf8eff6a7, igarag
+Grepline: @@ -35 +36 @@ class XMLHandler(ContentHandler):
+New call: proxy_registrar.py ,36,7a6b1e775492c821fd5cb67551e8dbbbf8eff6a7, igarag
+Grepline: @@ -41 +42 @@ class XMLHandler(ContentHandler):
+New call: proxy_registrar.py ,42,7a6b1e775492c821fd5cb67551e8dbbbf8eff6a7, igarag
+Grepline: @@ -45,2 +46 @@ class XMLHandler(ContentHandler):
+New call: proxy_registrar.py ,46,7a6b1e775492c821fd5cb67551e8dbbbf8eff6a7, igarag
+Grepline: @@ -51,7 +51,8 @@ class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
+New call: proxy_registrar.py ,51,7a6b1e775492c821fd5cb67551e8dbbbf8eff6a7, igarag
+Grepline: @@ -59 +60 @@ class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
+New call: proxy_registrar.py ,60,7a6b1e775492c821fd5cb67551e8dbbbf8eff6a7, igarag
+Grepline: @@ -61,3 +62,3 @@ class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
+New call: proxy_registrar.py ,62,7a6b1e775492c821fd5cb67551e8dbbbf8eff6a7, igarag
+Grepline: @@ -65 +66,4 @@ class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
+New call: proxy_registrar.py ,66,7a6b1e775492c821fd5cb67551e8dbbbf8eff6a7, igarag
+Grepline: @@ -67 +71 @@ class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
+New call: proxy_registrar.py ,71,7a6b1e775492c821fd5cb67551e8dbbbf8eff6a7, igarag
+Grepline: @@ -108 +111,0 @@ class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
+New call: proxy_registrar.py ,111,7a6b1e775492c821fd5cb67551e8dbbbf8eff6a7, igarag
+Grepline: @@ -119 +122,3 @@ class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
+New call: proxy_registrar.py ,122,7a6b1e775492c821fd5cb67551e8dbbbf8eff6a7, igarag
+Grepline: @@ -122 +127 @@ class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
+New call: proxy_registrar.py ,127,7a6b1e775492c821fd5cb67551e8dbbbf8eff6a7, igarag
+Grepline: @@ -123,0 +129,6 @@ class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
+New call: proxy_registrar.py ,129,7a6b1e775492c821fd5cb67551e8dbbbf8eff6a7, igarag
+Grepline: @@ -129 +140 @@ class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
+New call: proxy_registrar.py ,140,7a6b1e775492c821fd5cb67551e8dbbbf8eff6a7, igarag
+Grepline: @@ -131,0 +143 @@ class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
+New call: proxy_registrar.py ,143,7a6b1e775492c821fd5cb67551e8dbbbf8eff6a7, igarag
+Grepline: @@ -135 +147 @@ class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
+New call: proxy_registrar.py ,147,7a6b1e775492c821fd5cb67551e8dbbbf8eff6a7, igarag
+Grepline: @@ -137,2 +149,5 @@ class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
+New call: proxy_registrar.py ,149,7a6b1e775492c821fd5cb67551e8dbbbf8eff6a7, igarag
+Grepline: @@ -139,0 +155 @@ class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
+New call: proxy_registrar.py ,155,7a6b1e775492c821fd5cb67551e8dbbbf8eff6a7, igarag
+Grepline: @@ -141,6 +157,9 @@ class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
+New call: proxy_registrar.py ,157,7a6b1e775492c821fd5cb67551e8dbbbf8eff6a7, igarag
+Grepline: @@ -150,2 +171 @@ class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
+New call: proxy_registrar.py ,171,7a6b1e775492c821fd5cb67551e8dbbbf8eff6a7, igarag
+Grepline: @@ -153,4 +173 @@ class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
+New call: proxy_registrar.py ,173,7a6b1e775492c821fd5cb67551e8dbbbf8eff6a7, igarag
+Grepline: @@ -158,4 +175,3 @@ class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
+New call: proxy_registrar.py ,175,7a6b1e775492c821fd5cb67551e8dbbbf8eff6a7, igarag
+Grepline: @@ -162,0 +179,11 @@ class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
+New call: proxy_registrar.py ,179,7a6b1e775492c821fd5cb67551e8dbbbf8eff6a7, igarag
+Grepline: @@ -166 +193 @@ class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
+New call: proxy_registrar.py ,193,7a6b1e775492c821fd5cb67551e8dbbbf8eff6a7, igarag
+Grepline: @@ -168,0 +196,16 @@ class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
+New call: proxy_registrar.py ,196,7a6b1e775492c821fd5cb67551e8dbbbf8eff6a7, igarag
+Grepline: @@ -171 +214 @@ class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
+New call: proxy_registrar.py ,214,7a6b1e775492c821fd5cb67551e8dbbbf8eff6a7, igarag
+Grepline: @@ -173,0 +217,3 @@ class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
+New call: proxy_registrar.py ,217,7a6b1e775492c821fd5cb67551e8dbbbf8eff6a7, igarag
+Grepline: @@ -174,0 +221,10 @@ class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
+New call: proxy_registrar.py ,221,7a6b1e775492c821fd5cb67551e8dbbbf8eff6a7, igarag
+Grepline: @@ -178,0 +235,3 @@ class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
+New call: proxy_registrar.py ,235,7a6b1e775492c821fd5cb67551e8dbbbf8eff6a7, igarag
+Grepline: @@ -196 +255 @@ if __name__ == "__main__":
+New call: proxy_registrar.py ,255,7a6b1e775492c821fd5cb67551e8dbbbf8eff6a7, igarag
+Grepline: @@ -209 +267,0 @@ if __name__ == "__main__":
+New call: proxy_registrar.py ,267,7a6b1e775492c821fd5cb67551e8dbbbf8eff6a7, igarag
+Grepline: @@ -210,0 +269,4 @@ if __name__ == "__main__":
+New call: proxy_registrar.py ,269,7a6b1e775492c821fd5cb67551e8dbbbf8eff6a7, igarag
+Grepline: @@ -4 +4 @@
+New call: uaserver.py ,4,ac2c2c78f81dc131c35d70240d41f3cd85e50f6c, igarag
+Grepline: @@ -9,0 +10 @@ import os
+New call: uaserver.py ,10,ac2c2c78f81dc131c35d70240d41f3cd85e50f6c, igarag
+Grepline: @@ -14,0 +16 @@ metodos = ("INVITE", "BYE", "ACK")
+New call: uaserver.py ,16,ac2c2c78f81dc131c35d70240d41f3cd85e50f6c, igarag
+Grepline: @@ -16,2 +18,3 @@ metodos = ("INVITE", "BYE", "ACK")
+New call: uaserver.py ,18,ac2c2c78f81dc131c35d70240d41f3cd85e50f6c, igarag
+Grepline: @@ -20,0 +24 @@ def log_status (Estado):
+New call: uaserver.py ,24,ac2c2c78f81dc131c35d70240d41f3cd85e50f6c, igarag
+Grepline: @@ -22,0 +27,3 @@ class XMLHandler(ContentHandler):
+New call: uaserver.py ,27,ac2c2c78f81dc131c35d70240d41f3cd85e50f6c, igarag
+Grepline: @@ -29 +36 @@ class XMLHandler(ContentHandler):
+New call: uaserver.py ,36,ac2c2c78f81dc131c35d70240d41f3cd85e50f6c, igarag
+Grepline: @@ -38 +45 @@ class XMLHandler(ContentHandler):
+New call: uaserver.py ,45,ac2c2c78f81dc131c35d70240d41f3cd85e50f6c, igarag
+Grepline: @@ -42,2 +49 @@ class XMLHandler(ContentHandler):
+New call: uaserver.py ,49,ac2c2c78f81dc131c35d70240d41f3cd85e50f6c, igarag
+Grepline: @@ -62 +68,4 @@ class EchoHandler(SocketServer.DatagramRequestHandler):
+New call: uaserver.py ,68,ac2c2c78f81dc131c35d70240d41f3cd85e50f6c, igarag
+Grepline: @@ -63,0 +73 @@ class EchoHandler(SocketServer.DatagramRequestHandler):
+New call: uaserver.py ,73,ac2c2c78f81dc131c35d70240d41f3cd85e50f6c, igarag
+Grepline: @@ -74,0 +85,2 @@ class EchoHandler(SocketServer.DatagramRequestHandler):
+New call: uaserver.py ,85,ac2c2c78f81dc131c35d70240d41f3cd85e50f6c, igarag
+Grepline: @@ -75,0 +88,19 @@ class EchoHandler(SocketServer.DatagramRequestHandler):
+New call: uaserver.py ,88,ac2c2c78f81dc131c35d70240d41f3cd85e50f6c, igarag
+Grepline: @@ -79 +110 @@ class EchoHandler(SocketServer.DatagramRequestHandler):
+New call: uaserver.py ,110,ac2c2c78f81dc131c35d70240d41f3cd85e50f6c, igarag
+Grepline: @@ -80,0 +112 @@ class EchoHandler(SocketServer.DatagramRequestHandler):
+New call: uaserver.py ,112,ac2c2c78f81dc131c35d70240d41f3cd85e50f6c, igarag
+Grepline: @@ -81,0 +114,2 @@ class EchoHandler(SocketServer.DatagramRequestHandler):
+New call: uaserver.py ,114,ac2c2c78f81dc131c35d70240d41f3cd85e50f6c, igarag
+Grepline: @@ -82,0 +117,6 @@ class EchoHandler(SocketServer.DatagramRequestHandler):
+New call: uaserver.py ,117,ac2c2c78f81dc131c35d70240d41f3cd85e50f6c, igarag
+Grepline: @@ -84,2 +124,3 @@ class EchoHandler(SocketServer.DatagramRequestHandler):
+New call: uaserver.py ,124,ac2c2c78f81dc131c35d70240d41f3cd85e50f6c, igarag
+Grepline: @@ -87,0 +129,7 @@ class EchoHandler(SocketServer.DatagramRequestHandler):
+New call: uaserver.py ,129,ac2c2c78f81dc131c35d70240d41f3cd85e50f6c, igarag
+Grepline: @@ -88,0 +137,4 @@ class EchoHandler(SocketServer.DatagramRequestHandler):
+New call: uaserver.py ,137,ac2c2c78f81dc131c35d70240d41f3cd85e50f6c, igarag
+Grepline: @@ -92 +144,2 @@ class EchoHandler(SocketServer.DatagramRequestHandler):
+New call: uaserver.py ,144,ac2c2c78f81dc131c35d70240d41f3cd85e50f6c, igarag
+Grepline: @@ -103 +156 @@ if __name__ == "__main__":
+New call: uaserver.py ,156,ac2c2c78f81dc131c35d70240d41f3cd85e50f6c, igarag
+Grepline: @@ -107,0 +161,2 @@ if __name__ == "__main__":
+New call: uaserver.py ,161,ac2c2c78f81dc131c35d70240d41f3cd85e50f6c, igarag
+Grepline: @@ -109,0 +165 @@ if __name__ == "__main__":
+New call: uaserver.py ,165,ac2c2c78f81dc131c35d70240d41f3cd85e50f6c, igarag
+Grepline: @@ -9,0 +10 @@ import sys
+New call: uaclient.py ,10,400f8472f340c0bea903af4ec145c597afe43243, igarag
+Grepline: @@ -14 +14,0 @@ from xml.sax.handler import ContentHandler
+New call: uaclient.py ,14,400f8472f340c0bea903af4ec145c597afe43243, igarag
+Grepline: @@ -16,0 +17 @@ metodos = ("REGISTER", "INVITE", "BYE", "ACK")
+New call: uaclient.py ,17,400f8472f340c0bea903af4ec145c597afe43243, igarag
+Grepline: @@ -25 +26 @@ class XMLHandler(ContentHandler):
+New call: uaclient.py ,26,400f8472f340c0bea903af4ec145c597afe43243, igarag
+Grepline: @@ -35 +36 @@ class XMLHandler(ContentHandler):
+New call: uaclient.py ,36,400f8472f340c0bea903af4ec145c597afe43243, igarag
+Grepline: @@ -39 +40 @@ class XMLHandler(ContentHandler):
+New call: uaclient.py ,40,400f8472f340c0bea903af4ec145c597afe43243, igarag
+Grepline: @@ -41,4 +41,0 @@ class XMLHandler(ContentHandler):
+New call: uaclient.py ,41,400f8472f340c0bea903af4ec145c597afe43243, igarag
+Grepline: @@ -46,0 +44,4 @@ def log_status (Estado):
+New call: uaclient.py ,44,400f8472f340c0bea903af4ec145c597afe43243, igarag
+Grepline: @@ -48,0 +50,4 @@ def log_status (Estado):
+New call: uaclient.py ,50,400f8472f340c0bea903af4ec145c597afe43243, igarag
+Grepline: @@ -61,3 +65,0 @@ if __name__ == "__main__":
+New call: uaclient.py ,65,400f8472f340c0bea903af4ec145c597afe43243, igarag
+Grepline: @@ -91 +93 @@ if len(sys.argv) == 4:
+New call: uaclient.py ,93,400f8472f340c0bea903af4ec145c597afe43243, igarag
+Grepline: @@ -96 +98 @@ if len(sys.argv) == 4:
+New call: uaclient.py ,98,400f8472f340c0bea903af4ec145c597afe43243, igarag
+Grepline: @@ -98 +100 @@ if len(sys.argv) == 4:
+New call: uaclient.py ,100,400f8472f340c0bea903af4ec145c597afe43243, igarag
+Grepline: @@ -115 +117 @@ print "Enviando: " + LINE
+New call: uaclient.py ,117,400f8472f340c0bea903af4ec145c597afe43243, igarag
+Grepline: @@ -118,2 +120,2 @@ my_socket.send(LINE + 'rn')
+New call: uaclient.py ,120,400f8472f340c0bea903af4ec145c597afe43243, igarag
+Grepline: @@ -125 +127,4 @@ try:
+New call: uaclient.py ,127,400f8472f340c0bea903af4ec145c597afe43243, igarag
+Grepline: @@ -129 +134 @@ try:
+New call: uaclient.py ,134,400f8472f340c0bea903af4ec145c597afe43243, igarag
+Grepline: @@ -137,0 +143 @@ data = data.split("rnrn")
+New call: uaclient.py ,143,400f8472f340c0bea903af4ec145c597afe43243, igarag
+Grepline: @@ -143 +149 @@ if data[0] == "SIP/2.0 100 Trying" and data[1] == "SIP/2.0 180 Ringing":
+New call: uaclient.py ,149,400f8472f340c0bea903af4ec145c597afe43243, igarag
+Grepline: @@ -147,0 +154,9 @@ if data[0] == "SIP/2.0 100 Trying" and data[1] == "SIP/2.0 180 Ringing":
+New call: uaclient.py ,154,400f8472f340c0bea903af4ec145c597afe43243, igarag
+Grepline: @@ -3,3 +3,3 @@
+New call: ua2.xml ,3,4a0e589c8f20d992052fa5b4e3943b7440821d70, mghfdez
+Grepline: @@ -7 +7 @@
+New call: ua2.xml ,7,4a0e589c8f20d992052fa5b4e3943b7440821d70, mghfdez
+Grepline: @@ -4 +4 @@
+New call: ua1.xml ,4,06ff0f077a9d92b5e35bac76ef4f08c184a7e5d2, mghfdez
+Grepline: @@ -7 +7 @@
+New call: ua1.xml ,7,06ff0f077a9d92b5e35bac76ef4f08c184a7e5d2, mghfdez
+Grepline: @@ -15,0 +16 @@ from xml.sax.handler import ContentHandler
+New call: uaserver.py ,16,787dce7fa9ddb671d1edc0eb6e4cb1cc184e2396, mghfdez
+Grepline: @@ -81,24 +81,0 @@ class SIPConfigLocal:
+New call: uaserver.py ,81,787dce7fa9ddb671d1edc0eb6e4cb1cc184e2396, mghfdez
+Grepline: @@ -123,42 +99,0 @@ def check_request(lista):
+New call: uaserver.py ,99,787dce7fa9ddb671d1edc0eb6e4cb1cc184e2396, mghfdez
+Grepline: @@ -184,2 +119,2 @@ class SIPHandler(SocketServer.DatagramRequestHandler):
+New call: uaserver.py ,119,787dce7fa9ddb671d1edc0eb6e4cb1cc184e2396, mghfdez
+Grepline: @@ -187,2 +122,2 @@ class SIPHandler(SocketServer.DatagramRequestHandler):
+New call: uaserver.py ,122,787dce7fa9ddb671d1edc0eb6e4cb1cc184e2396, mghfdez
+Grepline: @@ -214,2 +149,2 @@ class SIPHandler(SocketServer.DatagramRequestHandler):
+New call: uaserver.py ,149,787dce7fa9ddb671d1edc0eb6e4cb1cc184e2396, mghfdez
+Grepline: @@ -221,2 +156,2 @@ class SIPHandler(SocketServer.DatagramRequestHandler):
+New call: uaserver.py ,156,787dce7fa9ddb671d1edc0eb6e4cb1cc184e2396, mghfdez
+Grepline: @@ -233,2 +168,2 @@ class SIPHandler(SocketServer.DatagramRequestHandler):
+New call: uaserver.py ,168,787dce7fa9ddb671d1edc0eb6e4cb1cc184e2396, mghfdez
+Grepline: @@ -239,2 +174,2 @@ class SIPHandler(SocketServer.DatagramRequestHandler):
+New call: uaserver.py ,174,787dce7fa9ddb671d1edc0eb6e4cb1cc184e2396, mghfdez
+Grepline: @@ -246,0 +182,41 @@ if __name__ == "__main__":
+New call: uaserver.py ,182,787dce7fa9ddb671d1edc0eb6e4cb1cc184e2396, mghfdez
+Grepline: @@ -17 +17 @@ from xml.sax.handler import ContentHandler
+New call: proxy_registrar.py ,17,97e6e35662b829ba24af82a61d43e39fdda065d0, mghfdez
+Grepline: @@ -79,24 +78,0 @@ class SIPConfigLocal:
+New call: proxy_registrar.py ,78,97e6e35662b829ba24af82a61d43e39fdda065d0, mghfdez
+Grepline: @@ -121,35 +96,0 @@ def check_request(lista):
+New call: proxy_registrar.py ,96,97e6e35662b829ba24af82a61d43e39fdda065d0, mghfdez
+Grepline: @@ -195,0 +137,3 @@ class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
+New call: proxy_registrar.py ,137,97e6e35662b829ba24af82a61d43e39fdda065d0, mghfdez
+Grepline: @@ -205 +149,3 @@ class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
+New call: proxy_registrar.py ,149,97e6e35662b829ba24af82a61d43e39fdda065d0, mghfdez
+Grepline: @@ -208 +153,0 @@ class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
+New call: proxy_registrar.py ,153,97e6e35662b829ba24af82a61d43e39fdda065d0, mghfdez
+Grepline: @@ -209,0 +155 @@ class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
+New call: proxy_registrar.py ,155,97e6e35662b829ba24af82a61d43e39fdda065d0, mghfdez
+Grepline: @@ -214,0 +161 @@ class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
+New call: proxy_registrar.py ,161,97e6e35662b829ba24af82a61d43e39fdda065d0, mghfdez
+Grepline: @@ -218,0 +166 @@ class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
+New call: proxy_registrar.py ,166,97e6e35662b829ba24af82a61d43e39fdda065d0, mghfdez
+Grepline: @@ -236,0 +185 @@ class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
+New call: proxy_registrar.py ,185,97e6e35662b829ba24af82a61d43e39fdda065d0, mghfdez
+Grepline: @@ -239,0 +189 @@ class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
+New call: proxy_registrar.py ,189,97e6e35662b829ba24af82a61d43e39fdda065d0, mghfdez
+Grepline: @@ -241,0 +192,2 @@ class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
+New call: proxy_registrar.py ,192,97e6e35662b829ba24af82a61d43e39fdda065d0, mghfdez
+Grepline: @@ -253,0 +206 @@ class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
+New call: proxy_registrar.py ,206,97e6e35662b829ba24af82a61d43e39fdda065d0, mghfdez
+Grepline: @@ -266,0 +220 @@ class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
+New call: proxy_registrar.py ,220,97e6e35662b829ba24af82a61d43e39fdda065d0, mghfdez
+Grepline: @@ -269,0 +224 @@ class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
+New call: proxy_registrar.py ,224,97e6e35662b829ba24af82a61d43e39fdda065d0, mghfdez
+Grepline: @@ -272 +227 @@ class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
+New call: proxy_registrar.py ,227,97e6e35662b829ba24af82a61d43e39fdda065d0, mghfdez
+Grepline: @@ -275 +230,3 @@ class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
+New call: proxy_registrar.py ,230,97e6e35662b829ba24af82a61d43e39fdda065d0, mghfdez
+Grepline: @@ -279,0 +237,32 @@ if __name__ == "__main__":
+New call: proxy_registrar.py ,237,97e6e35662b829ba24af82a61d43e39fdda065d0, mghfdez
+Grepline: @@ -80,4 +80 @@ class SIPConfigLocal:
+New call: uaclient.py ,80,8e8ee39bea654cc6a98e624d370e4911dbfe8015, mghfdez
+Grepline: @@ -85,11 +82,15 @@ def write_log(fichero, evento):
+New call: uaclient.py ,82,8e8ee39bea654cc6a98e624d370e4911dbfe8015, mghfdez
+Grepline: @@ -97,5 +98,18 @@ def formar_evento(tipo, datos, ip, puerto):
+New call: uaclient.py ,98,8e8ee39bea654cc6a98e624d370e4911dbfe8015, mghfdez
+Grepline: @@ -106,0 +121 @@ if __name__ == "__main__":
+New call: uaclient.py ,121,8e8ee39bea654cc6a98e624d370e4911dbfe8015, mghfdez
+Grepline: @@ -128,5 +143,2 @@ if __name__ == "__main__":
+New call: uaclient.py ,143,8e8ee39bea654cc6a98e624d370e4911dbfe8015, mghfdez
+Grepline: @@ -200,2 +212 @@ if __name__ == "__main__":
+New call: uaclient.py ,212,8e8ee39bea654cc6a98e624d370e4911dbfe8015, mghfdez
+Grepline: @@ -204,2 +215 @@ if __name__ == "__main__":
+New call: uaclient.py ,215,8e8ee39bea654cc6a98e624d370e4911dbfe8015, mghfdez
+Grepline: @@ -210,2 +220 @@ if __name__ == "__main__":
+New call: uaclient.py ,220,8e8ee39bea654cc6a98e624d370e4911dbfe8015, mghfdez
+Grepline: @@ -213,2 +222 @@ if __name__ == "__main__":
+New call: uaclient.py ,222,8e8ee39bea654cc6a98e624d370e4911dbfe8015, mghfdez
+Grepline: @@ -252,2 +260,2 @@ if __name__ == "__main__":
+New call: uaclient.py ,260,8e8ee39bea654cc6a98e624d370e4911dbfe8015, mghfdez
+Grepline: @@ -256,0 +265 @@ if __name__ == "__main__":
+New call: uaclient.py ,265,8e8ee39bea654cc6a98e624d370e4911dbfe8015, mghfdez
+Grepline: @@ -257,0 +267 @@ if __name__ == "__main__":
+New call: uaclient.py ,267,8e8ee39bea654cc6a98e624d370e4911dbfe8015, mghfdez
+Grepline: @@ -244,0 +245 @@ if __name__ == "__main__":
+New call: uaclient.py ,245,a8a5097258ff05eb39b4b8e4b3da30904a8bc6da, mghfdez
+Grepline: @@ -149,0 +150 @@ dicc_sdp = {}
+New call: uaserver.py ,150,452ba701024f40e94f0b541fb4d28afac23693ec, mghfdez
+Grepline: @@ -156,0 +158 @@ AUDIO_FILE = str(datos_sesion['audio_path'])
+New call: uaserver.py ,158,452ba701024f40e94f0b541fb4d28afac23693ec, mghfdez
+Grepline: @@ -169 +171 @@ class SIPHandler(SocketServer.DatagramRequestHandler):
+New call: uaserver.py ,171,452ba701024f40e94f0b541fb4d28afac23693ec, mghfdez
+Grepline: @@ -187 +189 @@ class SIPHandler(SocketServer.DatagramRequestHandler):
+New call: uaserver.py ,189,452ba701024f40e94f0b541fb4d28afac23693ec, mghfdez
+Grepline: @@ -203,3 +205,8 @@ class SIPHandler(SocketServer.DatagramRequestHandler):
+New call: uaserver.py ,205,452ba701024f40e94f0b541fb4d28afac23693ec, mghfdez
+Grepline: @@ -208,0 +216 @@ class SIPHandler(SocketServer.DatagramRequestHandler):
+New call: uaserver.py ,216,452ba701024f40e94f0b541fb4d28afac23693ec, mghfdez
+Grepline: @@ -210,0 +219 @@ class SIPHandler(SocketServer.DatagramRequestHandler):
+New call: uaserver.py ,219,452ba701024f40e94f0b541fb4d28afac23693ec, mghfdez
+Grepline: @@ -213,0 +223 @@ class SIPHandler(SocketServer.DatagramRequestHandler):
+New call: uaserver.py ,223,452ba701024f40e94f0b541fb4d28afac23693ec, mghfdez
+Grepline: @@ -218 +228 @@ class SIPHandler(SocketServer.DatagramRequestHandler):
+New call: uaserver.py ,228,452ba701024f40e94f0b541fb4d28afac23693ec, mghfdez
+Grepline: @@ -220 +230 @@ class SIPHandler(SocketServer.DatagramRequestHandler):
+New call: uaserver.py ,230,452ba701024f40e94f0b541fb4d28afac23693ec, mghfdez
+Grepline: @@ -224,0 +235 @@ class SIPHandler(SocketServer.DatagramRequestHandler):
+New call: uaserver.py ,235,452ba701024f40e94f0b541fb4d28afac23693ec, mghfdez
+Grepline: @@ -230 +240,0 @@ class SIPHandler(SocketServer.DatagramRequestHandler):
+New call: uaserver.py ,240,452ba701024f40e94f0b541fb4d28afac23693ec, mghfdez
+Grepline: @@ -233,4 +232,0 @@ class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
+New call: proxy_registrar.py ,232,28784f47b783b503876d1c386451b3cd76746ba0, mghfdez
+Grepline: @@ -244 +240 @@ class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
+New call: proxy_registrar.py ,240,28784f47b783b503876d1c386451b3cd76746ba0, mghfdez
+Grepline: @@ -259 +254,0 @@ class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
+New call: proxy_registrar.py ,254,28784f47b783b503876d1c386451b3cd76746ba0, mghfdez
+Grepline: @@ -261,3 +255,0 @@ class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
+New call: proxy_registrar.py ,255,28784f47b783b503876d1c386451b3cd76746ba0, mghfdez
+Grepline: @@ -265 +257,16 @@ class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
+New call: proxy_registrar.py ,257,28784f47b783b503876d1c386451b3cd76746ba0, mghfdez
+Grepline: @@ -123,2 +123,2 @@ if __name__ == "__main__":
+New call: uaclient.py ,123,59582c41a47be0a2c105f4c7c98edea4fea475c1, mghfdez
+Grepline: @@ -133 +133,2 @@ if __name__ == "__main__":
+New call: uaclient.py ,133,59582c41a47be0a2c105f4c7c98edea4fea475c1, mghfdez
+Grepline: @@ -142,0 +144 @@ if __name__ == "__main__":
+New call: uaclient.py ,144,59582c41a47be0a2c105f4c7c98edea4fea475c1, mghfdez
+Grepline: @@ -183,2 +185,2 @@ if __name__ == "__main__":
+New call: uaclient.py ,185,59582c41a47be0a2c105f4c7c98edea4fea475c1, mghfdez
+Grepline: @@ -186,5 +188,5 @@ if __name__ == "__main__":
+New call: uaclient.py ,188,59582c41a47be0a2c105f4c7c98edea4fea475c1, mghfdez
+Grepline: @@ -215 +217,20 @@ if __name__ == "__main__":
+New call: uaclient.py ,217,59582c41a47be0a2c105f4c7c98edea4fea475c1, mghfdez
+Grepline: @@ -218,0 +240,8 @@ if __name__ == "__main__":
+New call: uaclient.py ,240,59582c41a47be0a2c105f4c7c98edea4fea475c1, mghfdez
+Grepline: @@ -220,3 +249,4 @@ if __name__ == "__main__":
+New call: uaclient.py ,249,59582c41a47be0a2c105f4c7c98edea4fea475c1, mghfdez
+Grepline: @@ -140 +139,0 @@ if __name__ == "__main__":
+New call: uaclient.py ,139,2d0811ed9b97e76d68e6adfa2c0296fcb19cc7d2, mghfdez
+Grepline: @@ -180 +178,0 @@ if __name__ == "__main__":
+New call: uaclient.py ,178,2d0811ed9b97e76d68e6adfa2c0296fcb19cc7d2, mghfdez
+Grepline: @@ -218 +216 @@ if __name__ == "__main__":
+New call: uaclient.py ,216,2d0811ed9b97e76d68e6adfa2c0296fcb19cc7d2, mghfdez
+Grepline: @@ -194,0 +195 @@ class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
+New call: proxy_registrar.py ,195,539395ef357850e2cbad16341b987d6bae67af6e, mghfdez
+Grepline: @@ -238,0 +240 @@ class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
+New call: proxy_registrar.py ,240,539395ef357850e2cbad16341b987d6bae67af6e, mghfdez
+Grepline: @@ -241,0 +244,2 @@ class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
+New call: proxy_registrar.py ,244,539395ef357850e2cbad16341b987d6bae67af6e, mghfdez
+Grepline: @@ -244 +248,16 @@ class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
+New call: proxy_registrar.py ,248,539395ef357850e2cbad16341b987d6bae67af6e, mghfdez
+Grepline: @@ -148,0 +149 @@ RTP_INFO = {}
+New call: uaserver.py ,149,42f5b8fba75e0cdfb5c163c7281db16812534764, mghfdez
+Grepline: @@ -190,7 +191,10 @@ class SIPHandler(SocketServer.DatagramRequestHandler):
+New call: uaserver.py ,191,42f5b8fba75e0cdfb5c163c7281db16812534764, mghfdez
+Grepline: @@ -149 +149,6 @@ name_database = datos_sesion['database_path']
+New call: proxy_registrar.py ,149,5b92e1cdf67e9da4f64fad4d8adafc25590290c6, mghfdez
+Grepline: @@ -161 +166 @@ class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
+New call: proxy_registrar.py ,166,5b92e1cdf67e9da4f64fad4d8adafc25590290c6, mghfdez
+Grepline: @@ -174 +179,2 @@ class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
+New call: proxy_registrar.py ,179,5b92e1cdf67e9da4f64fad4d8adafc25590290c6, mghfdez
+Grepline: @@ -176 +182 @@ class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
+New call: proxy_registrar.py ,182,5b92e1cdf67e9da4f64fad4d8adafc25590290c6, mghfdez
+Grepline: @@ -193 +199 @@ class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
+New call: proxy_registrar.py ,199,5b92e1cdf67e9da4f64fad4d8adafc25590290c6, mghfdez
+Grepline: @@ -195,0 +202 @@ class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
+New call: proxy_registrar.py ,202,5b92e1cdf67e9da4f64fad4d8adafc25590290c6, mghfdez
+Grepline: @@ -201 +208 @@ class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
+New call: proxy_registrar.py ,208,5b92e1cdf67e9da4f64fad4d8adafc25590290c6, mghfdez
+Grepline: @@ -203 +210,2 @@ class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
+New call: proxy_registrar.py ,210,5b92e1cdf67e9da4f64fad4d8adafc25590290c6, mghfdez
+Grepline: @@ -207,2 +215,2 @@ class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
+New call: proxy_registrar.py ,215,5b92e1cdf67e9da4f64fad4d8adafc25590290c6, mghfdez
+Grepline: @@ -210,0 +219 @@ class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
+New call: proxy_registrar.py ,219,5b92e1cdf67e9da4f64fad4d8adafc25590290c6, mghfdez
+Grepline: @@ -212 +221,22 @@ class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
+New call: proxy_registrar.py ,221,5b92e1cdf67e9da4f64fad4d8adafc25590290c6, mghfdez
+Grepline: @@ -147,0 +148 @@ IP = datos_sesion['uaserver_ip']
+New call: uaserver.py ,148,a18d872880542d30d71f35db03cd7a3c7225c3fe, mghfdez
+Grepline: @@ -187,0 +189,8 @@ class SIPHandler(SocketServer.DatagramRequestHandler):
+New call: uaserver.py ,189,a18d872880542d30d71f35db03cd7a3c7225c3fe, mghfdez
+Grepline: @@ -189,0 +199 @@ class SIPHandler(SocketServer.DatagramRequestHandler):
+New call: uaserver.py ,199,a18d872880542d30d71f35db03cd7a3c7225c3fe, mghfdez
+Grepline: @@ -192 +201,0 @@ class SIPHandler(SocketServer.DatagramRequestHandler):
+New call: uaserver.py ,201,a18d872880542d30d71f35db03cd7a3c7225c3fe, mghfdez
+Grepline: @@ -195 +204 @@ class SIPHandler(SocketServer.DatagramRequestHandler):
+New call: uaserver.py ,204,a18d872880542d30d71f35db03cd7a3c7225c3fe, mghfdez
+Grepline: @@ -201,0 +211 @@ class SIPHandler(SocketServer.DatagramRequestHandler):
+New call: uaserver.py ,211,a18d872880542d30d71f35db03cd7a3c7225c3fe, mghfdez
+Grepline: @@ -204,2 +214,3 @@ class SIPHandler(SocketServer.DatagramRequestHandler):
+New call: uaserver.py ,214,a18d872880542d30d71f35db03cd7a3c7225c3fe, mghfdez
+Grepline: @@ -139,0 +140,4 @@ if __name__ == "__main__":
+New call: uaclient.py ,140,4d02b07de038f07369ae2eb15123420df7cf5678, mghfdez
+Grepline: @@ -160 +163,0 @@ if __name__ == "__main__":
+New call: uaclient.py ,163,4d02b07de038f07369ae2eb15123420df7cf5678, mghfdez
+Grepline: @@ -168 +171,12 @@ if __name__ == "__main__":
+New call: uaclient.py ,171,4d02b07de038f07369ae2eb15123420df7cf5678, mghfdez
+Grepline: @@ -171 +185 @@ if __name__ == "__main__":
+New call: uaclient.py ,185,4d02b07de038f07369ae2eb15123420df7cf5678, mghfdez
+Grepline: @@ -173 +186,0 @@ if __name__ == "__main__":
+New call: uaclient.py ,186,4d02b07de038f07369ae2eb15123420df7cf5678, mghfdez
+Grepline: @@ -176,3 +189,4 @@ if __name__ == "__main__":
+New call: uaclient.py ,189,4d02b07de038f07369ae2eb15123420df7cf5678, mghfdez
+Grepline: @@ -182,6 +195,0 @@ if __name__ == "__main__":
+New call: uaclient.py ,195,4d02b07de038f07369ae2eb15123420df7cf5678, mghfdez
+Grepline: @@ -214,0 +223,2 @@ if __name__ == "__main__":
+New call: uaclient.py ,223,4d02b07de038f07369ae2eb15123420df7cf5678, mghfdez
+Grepline: @@ -0,0 +1,227 @@
+New call: proxy_registrar.py ,1,c27918a5c656526e96d0f5ed3add05a5e5310a1c, mghfdez
+Grepline: @@ -2,3 +2,3 @@
+New call: pr.xml ,2,809815739575ab1c25aeb417ad335b06db01504c, mghfdez
+Grepline: @@ -5,0 +6 @@
+New call: pr.xml ,6,809815739575ab1c25aeb417ad335b06db01504c, mghfdez
+Grepline: @@ -4,2 +4,2 @@
+New call: ua1.xml ,4,ce05566121139c85a45c4e02bfd93693f1cdc161, mghfdez
+Grepline: @@ -0,0 +1,210 @@
+New call: proxy_registrar.py ,1,b8ab83f080730c7e531f0010831f6faafec05e89, igarag
+Grepline: @@ -0,0 +1,114 @@
+New call: uaserver.py ,1,cfc1b954f8edaf853b77c812f69bdb727c273419, igarag
+Grepline: @@ -0,0 +1,149 @@
+New call: uaclient.py ,1,377bb1f5d69b2bef0070a0052176407f76dd2fb4, igarag
+Grepline: @@ -3 +3 @@
+New call: uaserver.py ,3,17e4002d3396c687e58fb7b3350be491da6e1cdb, mghfdez
+Grepline: @@ -6,0 +7 @@ Clase (y programa principal) para un servidor SIP
+New call: uaserver.py ,7,17e4002d3396c687e58fb7b3350be491da6e1cdb, mghfdez
+Grepline: @@ -9,2 +9,0 @@ import SocketServer
+New call: uaserver.py ,9,17e4002d3396c687e58fb7b3350be491da6e1cdb, mghfdez
+Grepline: @@ -11,0 +11,5 @@ import socket
+New call: uaserver.py ,11,17e4002d3396c687e58fb7b3350be491da6e1cdb, mghfdez
+Grepline: @@ -13,3 +16,0 @@ import socket
+New call: uaserver.py ,16,17e4002d3396c687e58fb7b3350be491da6e1cdb, mghfdez
+Grepline: @@ -17,13 +18,62 @@ server_data = sys.argv
+New call: uaserver.py ,18,17e4002d3396c687e58fb7b3350be491da6e1cdb, mghfdez
+Grepline: @@ -30,0 +81,24 @@ if not os.path.exists(AUDIO_FILE):
+New call: uaserver.py ,81,17e4002d3396c687e58fb7b3350be491da6e1cdb, mghfdez
+Grepline: @@ -34,2 +108,2 @@ def check_request(lista):
+New call: uaserver.py ,108,17e4002d3396c687e58fb7b3350be491da6e1cdb, mghfdez
+Grepline: @@ -38,2 +112 @@ def check_request(lista):
+New call: uaserver.py ,112,17e4002d3396c687e58fb7b3350be491da6e1cdb, mghfdez
+Grepline: @@ -41 +114 @@ def check_request(lista):
+New call: uaserver.py ,114,17e4002d3396c687e58fb7b3350be491da6e1cdb, mghfdez
+Grepline: @@ -43 +116 @@ def check_request(lista):
+New call: uaserver.py ,116,17e4002d3396c687e58fb7b3350be491da6e1cdb, mghfdez
+Grepline: @@ -49,0 +123,38 @@ def check_request(lista):
+New call: uaserver.py ,123,17e4002d3396c687e58fb7b3350be491da6e1cdb, mghfdez
+Grepline: @@ -61 +172,2 @@ class SIPHandler(SocketServer.DatagramRequestHandler):
+New call: uaserver.py ,172,17e4002d3396c687e58fb7b3350be491da6e1cdb, mghfdez
+Grepline: @@ -66 +178,4 @@ class SIPHandler(SocketServer.DatagramRequestHandler):
+New call: uaserver.py ,178,17e4002d3396c687e58fb7b3350be491da6e1cdb, mghfdez
+Grepline: @@ -67,0 +183,2 @@ class SIPHandler(SocketServer.DatagramRequestHandler):
+New call: uaserver.py ,183,17e4002d3396c687e58fb7b3350be491da6e1cdb, mghfdez
+Grepline: @@ -74,0 +192 @@ class SIPHandler(SocketServer.DatagramRequestHandler):
+New call: uaserver.py ,192,17e4002d3396c687e58fb7b3350be491da6e1cdb, mghfdez
+Grepline: @@ -75,0 +194,2 @@ class SIPHandler(SocketServer.DatagramRequestHandler):
+New call: uaserver.py ,194,17e4002d3396c687e58fb7b3350be491da6e1cdb, mghfdez
+Grepline: @@ -77 +197,4 @@ class SIPHandler(SocketServer.DatagramRequestHandler):
+New call: uaserver.py ,197,17e4002d3396c687e58fb7b3350be491da6e1cdb, mghfdez
+Grepline: @@ -80 +203 @@ class SIPHandler(SocketServer.DatagramRequestHandler):
+New call: uaserver.py ,203,17e4002d3396c687e58fb7b3350be491da6e1cdb, mghfdez
+Grepline: @@ -82 +205,2 @@ class SIPHandler(SocketServer.DatagramRequestHandler):
+New call: uaserver.py ,205,17e4002d3396c687e58fb7b3350be491da6e1cdb, mghfdez
+Grepline: @@ -83,0 +208,2 @@ class SIPHandler(SocketServer.DatagramRequestHandler):
+New call: uaserver.py ,208,17e4002d3396c687e58fb7b3350be491da6e1cdb, mghfdez
+Grepline: @@ -85 +211,4 @@ class SIPHandler(SocketServer.DatagramRequestHandler):
+New call: uaserver.py ,211,17e4002d3396c687e58fb7b3350be491da6e1cdb, mghfdez
+Grepline: @@ -2,6 +2,6 @@
+New call: ua2.xml ,2,7146474e45990ab88ce0c7377cabb6d3a2dba4e2, mghfdez
+Grepline: @@ -2 +2 @@
+New call: ua1.xml ,2,37648319aa463ab4fd032e3c85060124fcbc4912, mghfdez
+Grepline: @@ -7,0 +8,2 @@ Programa cliente que abre un socket a un servidor
+New call: uaclient.py ,8,922689fab02f9db5971d9d89123a8a9fcd1f3b36, mghfdez
+Grepline: @@ -84 +86,3 @@ def formar_evento(tipo, datos, ip, puerto):
+New call: uaclient.py ,86,922689fab02f9db5971d9d89123a8a9fcd1f3b36, mghfdez
+Grepline: @@ -92,0 +97,3 @@ def formar_evento(tipo, datos, ip, puerto):
+New call: uaclient.py ,97,922689fab02f9db5971d9d89123a8a9fcd1f3b36, mghfdez
+Grepline: @@ -129 +136,15 @@ if __name__ == "__main__":
+New call: uaclient.py ,136,922689fab02f9db5971d9d89123a8a9fcd1f3b36, mghfdez
+Grepline: @@ -137 +158 @@ if __name__ == "__main__":
+New call: uaclient.py ,158,922689fab02f9db5971d9d89123a8a9fcd1f3b36, mghfdez
+Grepline: @@ -141 +162,2 @@ if __name__ == "__main__":
+New call: uaclient.py ,162,922689fab02f9db5971d9d89123a8a9fcd1f3b36, mghfdez
+Grepline: @@ -147 +169,12 @@ if __name__ == "__main__":
+New call: uaclient.py ,169,922689fab02f9db5971d9d89123a8a9fcd1f3b36, mghfdez
+Grepline: @@ -153 +186 @@ if __name__ == "__main__":
+New call: uaclient.py ,186,922689fab02f9db5971d9d89123a8a9fcd1f3b36, mghfdez
+Grepline: @@ -155,0 +189 @@ if __name__ == "__main__":
+New call: uaclient.py ,189,922689fab02f9db5971d9d89123a8a9fcd1f3b36, mghfdez
+Grepline: @@ -158 +192 @@ if __name__ == "__main__":
+New call: uaclient.py ,192,922689fab02f9db5971d9d89123a8a9fcd1f3b36, mghfdez
+Grepline: @@ -166 +200,2 @@ if __name__ == "__main__":
+New call: uaclient.py ,200,922689fab02f9db5971d9d89123a8a9fcd1f3b36, mghfdez
+Grepline: @@ -175 +210 @@ if __name__ == "__main__":
+New call: uaclient.py ,210,922689fab02f9db5971d9d89123a8a9fcd1f3b36, mghfdez
+Grepline: @@ -0,0 +1,11 @@
+New call: config.xml ,1,8a07cce64d7c0856438f5f1c98524375c9d97d23, igarag
+Grepline: @@ -0,0 +1,42 @@
+New call: Extractor.py ,1,073c58ea9b6f6751e06aad9e9083724ecd308fe3, igarag
+Grepline: @@ -0,0 +1,5 @@
+New call: pr.xml ,1,dc8ce3926a8ac5b0f040102a5cc9247727cec696, miguel angel fernandez sanchez
+Grepline: @@ -0,0 +1,8 @@
+New call: ua2.xml ,1,9364ba2bbee97251ec4c88e4654df8417290c617, miguel angel fernandez sanchez
+Grepline: @@ -0,0 +1,8 @@
+New call: ua1.xml ,1,6c4285f23f10e66c943c79f74fbeb96a0c6b0e6a, miguel angel fernandez sanchez
+Grepline: @@ -10,0 +11 @@ import os
+New call: uaclient.py ,11,70106ccecb54ce19a8ec0b5dab64e7228e93606b, miguel angel fernandez sanchez
+Grepline: @@ -76,0 +78,18 @@ class SIPConfigLocal:
+New call: uaclient.py ,78,70106ccecb54ce19a8ec0b5dab64e7228e93606b, miguel angel fernandez sanchez
+Grepline: @@ -97,3 +116,2 @@ if __name__ == "__main__":
+New call: uaclient.py ,116,70106ccecb54ce19a8ec0b5dab64e7228e93606b, miguel angel fernandez sanchez
+Grepline: @@ -101,0 +120,7 @@ if __name__ == "__main__":
+New call: uaclient.py ,120,70106ccecb54ce19a8ec0b5dab64e7228e93606b, miguel angel fernandez sanchez
+Grepline: @@ -105 +129,0 @@ if __name__ == "__main__":
+New call: uaclient.py ,129,70106ccecb54ce19a8ec0b5dab64e7228e93606b, miguel angel fernandez sanchez
+Grepline: @@ -115 +139 @@ if __name__ == "__main__":
+New call: uaclient.py ,139,70106ccecb54ce19a8ec0b5dab64e7228e93606b, miguel angel fernandez sanchez
+Grepline: @@ -117 +141 @@ if __name__ == "__main__":
+New call: uaclient.py ,141,70106ccecb54ce19a8ec0b5dab64e7228e93606b, miguel angel fernandez sanchez
+Grepline: @@ -133,0 +158,2 @@ if __name__ == "__main__":
+New call: uaclient.py ,158,70106ccecb54ce19a8ec0b5dab64e7228e93606b, miguel angel fernandez sanchez
+Grepline: @@ -135,0 +162,2 @@ if __name__ == "__main__":
+New call: uaclient.py ,162,70106ccecb54ce19a8ec0b5dab64e7228e93606b, miguel angel fernandez sanchez
+Grepline: @@ -138 +166,6 @@ if __name__ == "__main__":
+New call: uaclient.py ,166,70106ccecb54ce19a8ec0b5dab64e7228e93606b, miguel angel fernandez sanchez
