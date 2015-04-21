@@ -10,9 +10,10 @@ import sys
 from time import strftime, gmtime
 import subprocess
 import shutil
+import commands
 
 print " - Graph Data Creator Started - "
-print " - MAKE SURE CTAGS, PERL AND GIT ARE INSTALLED IN YOUR COMPUTER\r\n"
+print " - MAKE SURE CTAGS AND GIT ARE INSTALLED IN YOUR COMPUTER\r\n"
 
 INIT_PATH = os.path.abspath(os.curdir)
 
@@ -46,7 +47,7 @@ def help():
     line += "git://git.openstack.org/openstack/swift\r\n"
     line += "\r\n-v\tVerbose mode."
 
-    line += "\r\n\r\nDEPENDENCIES\r\n\r\nPerl, git and ctags are required "
+    line += "\r\n\r\nDEPENDENCIES\r\n\r\nGit and ctags are required "
     line += "to run this script.\r\n\r\nOUTPUT\r\n\r\n"
     line += "DataMethods.csv-File using relationship-in-method approach\r\n"
     line += "DataFiles.csv-File using relantionship-in-file approach\r\n"
@@ -320,8 +321,8 @@ class GraphData:
         print "|---------------- GIT DIFF START --------------|\r\n"
         go_home_dir()
         os.chdir(self.CHECKOUT_PATH)
-        to_exe = ['git', 'diff', '--unified=0', rev + "^!"]
-        entireDiff = subprocess.check_output(to_exe)
+        to_exe = 'git diff --unified=0 ' + rev + '^!'
+        status_diff, entireDiff = commands.getstatusoutput(to_exe)
         go_home_dir()
         diff_path = self.DATA_PATH + '/' + self.out_names['diff']
         self.out_files['diff'].close()
@@ -352,9 +353,11 @@ class GraphData:
         line = line_to_extract.split()
         rev = line[0]
         line = " ".join(line[1:])
-        line = line.split("Date")
-        line = line[0].split()
-        author = line[1]
+        
+        print self.log("Line extract: " + line)
+        line = line.split("<")
+        author = line[0].split(': ')[1]
+        print self.log("Author function: " + author)
         return [rev, author]
 
     def grepline_info(self, grepline):
@@ -364,15 +367,16 @@ class GraphData:
         file1 = ""
         lineNumber1 = ""
         if grepline[0] != '+' and grepline[0] != '-':
-                    grepline_data = grepline.split()
-                    if grepline_data[0] == "diff":
-                        for data in grepline_data:
-                            if (data[0] == 'b') and (data[1] == '/'):
-                                file1 = data[2:]
-                    elif grepline_data[0] == "@@":
-                        for data in grepline_data:
-                            if data[0] == "+":
-                                lineNumber1 = data[1:]
+                grepline_data = grepline.split()
+                if grepline_data[0] == "diff":
+                    for data in grepline_data:
+                        if (data[0] == 'b') and (data[1] == '/'):
+                            file1 = data[2:]
+                elif grepline_data[0] == "@@":
+                    for data in grepline_data:
+                        if data[0] == "+":
+                            num = data.split(',')
+                            lineNumber1 = num[0][1:]
         return [file1, lineNumber1]
     
     def extract_file_names(self, diff):
@@ -416,6 +420,7 @@ class GraphData:
         return lines_ok
 
     def print_unless(self, text, file_name):
+        # FIXME: Add function description
 
         fich = open(file_name, 'r')
         lines = fich.readlines()
@@ -447,44 +452,46 @@ class GraphData:
         matches = ""
         file_list = os.listdir(os.curdir)
         fich = self.out_files['output']
-        if file_compare in file_list:
-            command1 = "grep " + file_compare + " tags"
-            print self.log("Executing: " + command1)
-            try:
-                matches = subprocess.check_output(command1.split())
-            except subprocess.CalledProcessError:
-                print "Error with grep-ctags"
-                matches = ""
+        logfind = open('logfind.log', 'a')
+        logfound = open('logfound.log', 'a')
+        #if file_compare in file_list:
+        command1 = "grep " + file_compare + " tags"
+        print self.log("Executing: " + command1)
+        status, matches = commands.getstatusoutput(command1)
+        print "status: "
+        print status
         #Case of not matching any tag
         if matches == "":
             #In this case the output has three fields (no tag)
             #log: "Adding file tag"
+            print "Linea vacia"
             line = rev + "," + file_compare + "," + author
             fich.write(line + '\n')
             #? Even if file isn't in folder?
         else:
             fittingLine = ""
             bestNumber = ""
-
             # This While loop calculates the method where the line number
             # received belongs to
-
+            logfind.write("------- ++\n")
+            logfind.write(matches)
+            logfind.write("------- __\r\n\r\n")
+            logfind.close()
             matches_lines = matches.split('\n')
             for match_line in matches_lines:
                 if match_line != "":
                     match_list = match_line.split()
-
                     # We have a line like this: AUDIO_FILE uaserver.py 26;" v
                     fMatch = match_list[1]
                     ext = match_list[1].split('.')[-1]
                     specialExt = False
 
-                    """
-                    lines depending on language
-                    case ext in cs|java|js|m|mm
+                    # FIXME: Translate this into python // Done
+                    
+                    # Depending on language
+                    spc_ext = ['cs', 'java', 'js', 'm', 'mm']
+                    if ext in spc_ext:
                         specialExt = True
-                    esac
-                    """
 
                     # Fourth parameter in tags file holds the type of tag
                     isAFunction = match_list[3]
@@ -493,13 +500,13 @@ class GraphData:
                     condition1 = specialExt and (isAFunction == 'm')
                     condition2 = not specialExt and (isAFunction == 'f')
                     if (condition1 or condition2):
+                        logfound.write("function-found " + match_list[0] + "\n")
                         log_line = "We are in a function-> f: "
-                        log_line += fMatch + "ext: " + ext 
+                        log_line += fMatch + "ext: " + ext
                         log_line += "Spec: " + str(specialExt) + " tag: " + str(isAFunction)
                         print self.log(log_line)
-                        
                         # Removing two last chars from third field to get the line number
-                        lineNumber = match_list[3][:-2]
+                        lineNumber = match_list[2][:-2]
                         
                         # Case of methods matching 
                         if fittingLine == "":
@@ -510,19 +517,25 @@ class GraphData:
                             if ((lineNumber > ln_num) and (lineNumber < bestNumber)):
                                 fittingLine = match_line
                                 bestNumber = lineNumber
+                     
 
-            # Not sure of this
+            log_line = "..and fitting line has been: " + fittingLine
+            print self.log(log_line)
             if fittingLine != "":
-                log_line = "..and fitting line has been: " + fittingLine
-                print self.log(log_line)
                 tagToWrite = fittingLine.split()[0]
+            else:
+                tagToWrite = ""
 
-                # Adding tag to output file
-                log_line = "Adding " + file_compare + ' ' + tagToWrite
-                log_line += "to output_file"
-                line = rev + "," + file_compare + ' ' + tagToWrite + "," + author
-                fich.write(line + '\n')
-                print self.log(log_line)
+            # Adding tag to output file
+            fichtag = open('fichtag.log', 'a')
+            fichtag.write("Tag-to-write: " + tagToWrite + "\n")
+            fichtag.close()
+            log_line = "Adding " + file_compare + ' ' + tagToWrite
+            log_line += "to output_file"
+            line = rev + "," + file_compare + ' ' + tagToWrite + "," + author
+            fich.write(line + '\n')
+            print self.log(log_line)
+            logfound.close()
             go_home_dir()
 
         print "|---------------- FIND FITTING TAG END --------------|\r\n"
@@ -571,8 +584,9 @@ if __name__ == "__main__":
     rev = ""
     author = ""
     file1 = ""
-    lineNumber1 = ""
-
+    
+    call = open("callmine.txt", 'a')
+    # FIXME: From here, this has to be divided in smaller functions
     for line in commit_lines_format:
         if line != "":
             # Extracting info: commit-id and author
@@ -588,17 +602,34 @@ if __name__ == "__main__":
             lastFile2 = ""
             allFiles = my_graph.out_files['allFiles']
             for grepline in outdiff:
-                info_grep = my_graph.grepline_info(grepline)
-                file_name = info_grep[0]
-                line_number = info_grep[1].split(',')[-1]
-                if file_name != "":
-                    print my_graph.log("File: " + file_name)
-                    lastFile2 = file_name
-                if (line_number != "") and (lastFile2 != ""):
+               lineNumber1 = ""
+
+               if grepline[0] != '+' and grepline[0] != '-':
+                grepline_data = grepline.split()
+                if (grepline_data[0] == "diff"):
+                    if grepline_data[1] == "--git":
+                        for data in grepline_data:
+                            if (data[0] == 'b') and (data[1] == '/'):
+                                file1 = data[2:]
+                elif grepline_data[0] == "@@":
+                    for data in grepline_data:
+                        if data[0] == "+":
+                            num = data.split(',')
+                            lineNumber1 = num[0][1:]
+                if file1 != "":
+                    print my_graph.log("File: " + file1)
+                    lastFile2 = file1
+                if lineNumber1 != "":
                     # When grep is empty, we add a tag ->
                     # it will be a file-to-file collaboration
-                    print my_graph.log("Line number: " + line_number)
-                    out1 = my_graph.findFittingTag(lastFile2, line_number,
+                    print my_graph.log("Line number: " + lineNumber1)
+                    call.write("Grepline: " + grepline)
+                    outtxt = "New call: " + lastFile2 + " ," + lineNumber1
+                    outtxt += "," + rev_author[0] + ", " + rev_author[1] + "\n"
+                    
+                    call.write(outtxt)
+                    
+                    out1 = my_graph.findFittingTag(lastFile2, lineNumber1,
                                                    rev_author[0], 
                                                    rev_author[1])
 
@@ -636,7 +667,79 @@ if __name__ == "__main__":
                     fich_tags.close()
                     info = "Tags added to tags file: now is up to date"
                     print my_graph.log(info)
-                        
-                    
 
-                    
+    info = "Starting to create data files -methods and files-"
+    print my_graph.log(info)
+    go_home_dir()
+    my_graph.out_files['output'].close()
+    os.chdir(my_graph.DATA_PATH)
+    outp_name = my_graph.out_names['output']
+    outpfile = open(outp_name, 'r')
+    
+    outp_lines = outpfile.readlines()
+    outpfile.close()  
+    arrayCommitters = []
+    
+    for oLine in outp_lines:
+        oLine_data = oLine.split(',')
+        print my_graph.log(str(oLine_data))
+        oRev = oLine_data[0]
+        oTag = oLine_data[1]
+        oCommitter = oLine_data[2]
+        oTag_data = oTag.split()
+
+        if len(oTag_data) == 2:
+            oFile = oTag_data[0]
+            oMethod = oTag_data[1]
+        else:
+            oFile = oTag_data[0]
+            oMethod = ""
+        print "oFile: " + oFile
+        print my_graph.log("Committer: " + oCommitter)
+        print my_graph.log("Grepping for " + oFile)
+        
+        grep_command = 'grep "' + oFile + '" ' + outp_name
+        print my_graph.log("Grepping for " + oFile)
+
+        status, grep_output = commands.getstatusoutput(grep_command)
+        
+
+        for res_line in grep_output.split('\n'):
+            grepline_data = res_line.split(',')
+            iCommitter = grepline_data[2]
+            iTag = grepline_data[1]
+            iTag_data = iTag.split()
+            if len(iTag_data) == 2:
+                iMethod = iTag_data[1]
+            else:
+                iMethod = ""
+
+                # If Committer is not in the list
+                log_line =  "File " + oFile + " and Method " + iMethod
+                log_line += " of Committer " + iCommitter
+                #print my_graph.log(log_line)
+
+    call.close()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
