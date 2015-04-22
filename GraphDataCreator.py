@@ -168,6 +168,7 @@ class GraphData:
     def __init__(self):
 
         self.DATA_PATH = "Data"
+        self.OUT_PATH = self.DATA_PATH + '/' + 'output'
         self.CHECKOUT_PATH = self.DATA_PATH + '/' + 'Repository'
         self.out_names = {}
         self.out_paths = {}
@@ -191,6 +192,7 @@ class GraphData:
     def create_data_files(self):
             os.mkdir(self.DATA_PATH)
             os.mkdir(self.CHECKOUT_PATH)
+            os.mkdir(self.OUT_PATH)
             for out_file in self.out_names.keys():
                 dir_to_open = self.DATA_PATH + '/' + self.out_names[out_file]
                 self.out_paths[out_file] = dir_to_open
@@ -662,9 +664,13 @@ if __name__ == "__main__":
     
     outp_lines = outpfile.readlines()
     outpfile.close()  
-    arrayCommitters = []
+
+    dm_file = open('DataMethods.csv', 'a')
+    df_file = open('DataFiles.csv', 'a')
     
     for oLine in outp_lines:
+        # Extracting all relevant data
+        
         oLine_data = oLine.split(',')
         print my_graph.log(str(oLine_data))
         oRev = oLine_data[0]
@@ -680,6 +686,11 @@ if __name__ == "__main__":
             oMethod = ""
         print "oFile: " + oFile
         print my_graph.log("Committer: " + oCommitter)
+
+        # Array of committers to avoid repetitions
+        listCommitters = []
+
+        # Grepping lines with same method
         print my_graph.log("Grepping for " + oFile)
         
         grep_command = 'grep "' + oFile + '" ' + outp_name
@@ -687,9 +698,8 @@ if __name__ == "__main__":
 
         status, grep_output = commands.getstatusoutput(grep_command)
         
-
-        for res_line in grep_output.split('\n'):
-            grepline_data = res_line.split(',')
+        for gLine in grep_output.split('\n'):
+            grepline_data = gLine.split(',')
             iCommitter = grepline_data[2]
             iTag = grepline_data[1]
             iTag_data = iTag.split()
@@ -702,7 +712,38 @@ if __name__ == "__main__":
             log_line =  "File " + oFile + " and Method " + iMethod
             log_line += " of Committer " + iCommitter
             print my_graph.log(log_line)
-            
-        # FIXME: To do: Last ifs and output creation 
+            if iCommitter not in listCommitters:
+                if oCommitter != iCommitter:
+                    # Match
+                    listCommitters.append(iCommitter)
+                    log_line = "Adding file " + oFile
+                    my_graph.log(log_line)
+                    line = oCommitter + "," + iCommitter
+                    df_file.write(line)
+                
+                    # If it also matches a method 
+                    # (as long as we have one)
+                    if oMethod != "":
+                        if oMethod == iMethod:
+                            log_line = "Adding method " + oMethod
+                            line = oCommitter + "," + iCommitter
+                            dm_file.write(line)
+            if len(grepline_data) == 4:
+                iMethod = grepline_data[2]
+            else:
+                iMethod = ""
+        # FIXME: To do: Check csv file-format 
+
+    df_file.close()
+    dm_file.close()
+    print my_graph.log("Finished: output created:")
+    comm1 = "mv DataMethods.csv " + my_graph.OUT_PATH[5:]
+    comm2 = "mv DataFiles.csv " + my_graph.OUT_PATH[5:]
+    os.system(comm1)
+    os.system(comm2)
+    go_home_dir()
+    
+    print "WARNING: You might be in 'detached HEAD' state."
+    print "You might want to remove Repository directory."
     print my_graph.log("\r\n - Graph Data Creator End - \r\n")
 
