@@ -1,6 +1,7 @@
 #!/bin/bash
+# -*- coding: iso-8859-15 -*-
 
-echo ' - Graph Data Creator Started - '
+echo " - Graph Data Creator Started - "
 echo " - MAKE SURE CTAGS, PERL AND GIT ARE INSTALLED IN YOUR COMPUTER"
 sleep 5
 
@@ -71,7 +72,7 @@ function findFittingTag()
   # Second argument: line number
   # Third argument: rev
   # Fourth argument: author
-  echo $1,$2,$3,$4 >> prueba.txt
+
   matches=$( grep $1 tags )
   # Case of not matching any tag
   if [ -z "${matches}" ]
@@ -79,7 +80,7 @@ function findFittingTag()
     # In this case the output has three fields (no tag)
     log "Adding file tag"
     echo "$3,$1,$4" >> outputFile.txt
-    # >> appends data --
+
   else
   
     fittingLine=""
@@ -90,12 +91,8 @@ function findFittingTag()
     while read matchLine
     do
       fMatch=$( echo "$matchLine" | awk '{print $2}' )
-      echo "Fmatch!!!!!!!!!!!!!!!!!!!!!!"
-      echo "Fmatch: " >> prueba.txt
-      echo $fMatch >> prueba.txt
       ext=$(echo "$fMatch" | sed 's/^.*\.//')
-      echo "ext: " >> prueba.txt
-      echo $ext >> prueba.txt
+
       specialExt=false
       # for javascript, c#, java and objectiveC files, a function is defined as an "n" instead of an "f" in ctags
       case "$ext" in
@@ -106,10 +103,7 @@ function findFittingTag()
 
       # Fourth parameter in tags file holds the type of tag
       isAFunction=$( echo "$matchLine" | awk '{print $4}' )
-      echo "is a function: " >> prueba.txt
-      echo $isAFunction >> prueba.txt
 
-      echo '{print $4}' >> prueba.txt
       if [[ "$specialExt" == true  &&  "$isAFunction" == "m" ]] || [[ "$specialExt" == false && "$isAFunction" == "f" ]]
       then
         log "We are in a function-> f: $fMatch ext: $ext Spec: $specialExt tag: $isAFunction"
@@ -120,7 +114,6 @@ function findFittingTag()
         if [ -z "${fittingLine}" ]
         then
           if [ "$LineNumber" -gt "$2" ]
-          # Como distingo entre un parametro de funcion y una posicion en una linea?--
           then
             fittingLine=$( echo "$matchLine" )
             bestNumber=$( echo "$LineNumber" )
@@ -156,9 +149,12 @@ from="1971-1-1"
 until=$(date +%Y-%m-%d)
 
 unamestr=`uname`
+
+echo $unamestr
 if [[ "$unamestr" != 'Linux' ]]
 then
   echo "We are not under Linux, no options available"
+  exit
 else
 	while getopts ":t:r:f:hv" flag; do
 		case "${flag}" in
@@ -249,13 +245,9 @@ fi
 echo "Reading first line and checking out from first commit"
 read -r startline<./archivoDeCommitsDesdeScript.txt
 revline=$(echo "$startline" | awk '{print $1}')
-echo $revline
-# Deberia coger el segundo parámetro en vez del primero--
-# ¿Por qué coge la palabra 'commit' en vez del identificador?--
 log "First line: $revline"
-echo "revline: " + $revline
 
-git checkout -f $revline  > checkout.txt
+git checkout -f $revline
 
 # ctags out of Linux
 unamestr=`uname`
@@ -269,7 +261,7 @@ fi
 echo "Creating tags file: tags"
 # Do this if ctags does not exist, otherwise just update it
 # Getting rid of annoying warning output
-ctags -w -R -n . >> 2&>1 
+ctags -w -R -n . >> 2&>1
 
 > outputFile.txt
 
@@ -279,7 +271,7 @@ do
   # and then get tag, we have to update
   
   log "- NEW LINE $line -"
-    echo $line > lineas.txt
+    
     rev=$(echo "$line" | awk '{print $1}')
     author=$(echo "$line" | awk '{$1=""; print $0}' )
     log "Author: $author"
@@ -289,7 +281,6 @@ do
 
     while read grepline
     do
-      echo $grepline > grepline.txt
       ### Getting rid of all lines we dont care about
       ### We only want this when we don't need to read the output of git diff, but only the files modified ###
       if [ ${grepline:0:1} != '+' ] && [ ${grepline:0:1} != '-' ]
@@ -384,6 +375,7 @@ do
         if [[ "$oMethod" == "$iMethod" ]] && [ -n "$oMethod" ]
         then
           log "Adding method $oMethod"
+          echo $oMethod >> methods.txt
           echo "\"$oCommitter\",\"$iCommitter\"" >> DataMethods.csv
         fi 
       fi
