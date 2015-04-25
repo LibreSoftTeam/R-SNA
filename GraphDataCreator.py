@@ -359,7 +359,7 @@ class GraphData:
         
         print self.log("Line extract: " + line)
         line = line.split("<")
-        author = line[0].split(': ')[1]
+        author = line[0].split('Author: ')[1]
         print self.log("Author function: " + author)
         return [rev, author]
 
@@ -676,6 +676,12 @@ if __name__ == "__main__":
         oRev = oLine_data[0]
         oTag = oLine_data[1]
         oCommitter = oLine_data[2]
+        oComm_prop = ""
+        for letter in oCommitter:
+            if (letter != " ") and (letter != '\n'):
+                oComm_prop += letter
+        oCommitter = oComm_prop
+                
         oTag_data = oTag.split()
 
         if len(oTag_data) == 2:
@@ -697,10 +703,20 @@ if __name__ == "__main__":
         print my_graph.log("Grepping for " + oFile)
 
         status, grep_output = commands.getstatusoutput(grep_command)
-        
-        for gLine in grep_output.split('\n'):
+        grep_outf = open("grep_outf.txt", 'w')
+        grep_outf.write(grep_output)
+        grep_outf.close()
+        grep_outf = open("grep_outf.txt", 'r')
+        grep_outlist = grep_outf.readlines()
+
+        for gLine in grep_outlist:
             grepline_data = gLine.split(',')
-            iCommitter = grepline_data[2]
+            iComm_prop = ""
+            iCommitter = grepline_data[2][:-1]
+            for letter in iCommitter:
+                if (letter != " ") and (letter != '\n'):
+                    iComm_prop += letter
+            iCommitter = iComm_prop
             iTag = grepline_data[1]
             iTag_data = iTag.split()
             if len(iTag_data) == 2:
@@ -713,32 +729,34 @@ if __name__ == "__main__":
             log_line += " of Committer " + iCommitter
             print my_graph.log(log_line)
             if iCommitter not in listCommitters:
-                if oCommitter != iCommitter:
-                    # Match
-                    listCommitters.append(iCommitter)
-                    log_line = "Adding file " + oFile
-                    my_graph.log(log_line)
-                    line = oCommitter + "," + iCommitter
-                    df_file.write(line)
-                
-                    # If it also matches a method 
-                    # (as long as we have one)
-                    if oMethod != "":
-                        if oMethod == iMethod:
+                if (oCommitter != iCommitter) and ((iCommitter != "") and (oCommitter != "")):
+                    if (oCommitter != " ") and (iCommitter != " "):
+                        # Match
+
+                        listCommitters.append(iCommitter)
+                        log_line = "Adding file " + oFile
+                        my_graph.log(log_line)
+                        line_df = '"' + oCommitter + '","' + iCommitter + '"\n'
+                        df_file.write(line_df)
+                    
+                        # If it also matches a method 
+                        # (as long as we have one)
+                        if (oMethod == iMethod) and (oMethod != ""):
                             log_line = "Adding method " + oMethod
-                            line = oCommitter + "," + iCommitter
-                            dm_file.write(line)
+                            line_dm = '"' + oCommitter + '","' + iCommitter + '"\n'
+                            dm_file.write(line_dm)
             if len(grepline_data) == 4:
-                iMethod = grepline_data[2]
-            else:
-                iMethod = ""
-        # FIXME: To do: Check csv file-format 
+                iMethod = grepline_data[2]  
+
+        # FIXME: To do: Check csv file-format and data
 
     df_file.close()
     dm_file.close()
     print my_graph.log("Finished: output created:")
     comm1 = "mv DataMethods.csv " + my_graph.OUT_PATH[5:]
     comm2 = "mv DataFiles.csv " + my_graph.OUT_PATH[5:]
+    print "Executing: " + comm1
+    print "Executing: " + comm2
     os.system(comm1)
     os.system(comm2)
     go_home_dir()
@@ -746,4 +764,3 @@ if __name__ == "__main__":
     print "WARNING: You might be in 'detached HEAD' state."
     print "You might want to remove Repository directory."
     print my_graph.log("\r\n - Graph Data Creator End - \r\n")
-
