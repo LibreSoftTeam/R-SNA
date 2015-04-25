@@ -189,6 +189,10 @@ class GraphData:
         self.conf_opt['r'] = ""  # Repository URL option (-r)
         self.conf_opt['h'] = False  # Show help option (-h)
 
+        self.fichtag = open('fichtag.log', 'w')
+        self.fichtag.close()
+        self.fichtag = open('fichtag.log', 'a')
+
     def create_data_files(self):
             os.mkdir(self.DATA_PATH)
             os.mkdir(self.CHECKOUT_PATH)
@@ -359,8 +363,13 @@ class GraphData:
         
         print self.log("Line extract: " + line)
         line = line.split("<")
-        author = line[0].split('Author: ')[1]
-        print self.log("Author function: " + author)
+        try:
+            author = line[0].split('Author: ')[1]
+            print self.log("Author function: " + author)
+        except IndexError:
+            author = ""
+            print self.log("No Author in this line")
+        
         return [rev, author]
 
     def grepline_info(self, grepline):
@@ -455,11 +464,12 @@ class GraphData:
         file_list = os.listdir(os.curdir)
         fich = self.out_files['output']
         
-        if file_compare in file_list:
-            command1 = "grep " + file_compare + " tags"
-            print self.log("Executing: " + command1)
-            status, matches = commands.getstatusoutput(command1)
+
+        command1 = "grep " + file_compare + " tags"
+        print self.log("Executing: " + command1)
+        status, matches = commands.getstatusoutput(command1)
         #Case of not matching any tag
+
         if matches == "":
             #In this case the output has three fields (no tag)
             print self.log("Adding file tag")
@@ -468,7 +478,7 @@ class GraphData:
             fich.write(line + '\n')
             #? Even if file isn't in folder?
         else:
-            
+
             fittingLine = ""
             bestNumber = ""
             # This While loop calculates the method where the line number
@@ -478,6 +488,7 @@ class GraphData:
             matches_lines = matches.split('\n')
             for match_line in matches_lines:
                 if match_line != "":
+                    print self.log("Matcch_line: " + match_line)
                     match_list = match_line.split()
                     # We have a line like this: AUDIO_FILE uaserver.py 26;" v
                     fMatch = match_list[1]
@@ -515,22 +526,24 @@ class GraphData:
                                 bestNumber = lineNumber
                      
 
-            log_line = "..and fitting line has been: " + fittingLine
-            print self.log(log_line)
+            log_line2 = "..and fitting line has been: " + fittingLine
+            print self.log(log_line2)
             if fittingLine != "":
                 tagToWrite = fittingLine.split()[0]
             else:
                 tagToWrite = ""
 
             # Adding tag to output file
-            fichtag = open('fichtag.log', 'a')
-            fichtag.write("Tag-to-write: " + tagToWrite + "\n")
-            fichtag.close()
-            log_line = "Adding " + file_compare + ' ' + tagToWrite
-            log_line += "to output_file"
+            
+            self.fichtag.write("Fitting line: " + fittingLine + "\n")
+            self.fichtag.write("Match line: " + match_line + "\n")
+            self.fichtag.write("Tag-to-write: " + tagToWrite + "\n")
+            
+            log_line3 = "Adding " + file_compare + ' ' + tagToWrite
+            log_line3 += "to output_file"
             line = rev + "," + file_compare + ' ' + tagToWrite + "," + author
             fich.write(line + '\n')
-            print self.log(log_line)
+            print self.log(log_line3)
 
             go_home_dir()
 
@@ -543,6 +556,8 @@ if __name__ == "__main__":
 
     # Instance of Graph class
     my_graph = GraphData()
+
+    
 
     extract_options(sys.argv, my_graph.conf_opt)
     my_graph.check_program_starting()
@@ -583,10 +598,13 @@ if __name__ == "__main__":
             # Extracting info: commit-id and author
             print my_graph.log("NEW LINE: " + line)
             rev_author = my_graph.extract_rev_auth(line)
+            if rev_author[1] == "":
+                continue
 
             print my_graph.log("Rev: " + rev_author[0])
             print my_graph.log("Author: " + rev_author[1])
-
+            
+            
             outdiff = my_graph.do_diff(rev_author[0])
             my_graph.do_checkout(rev_author[0])
 
@@ -683,10 +701,15 @@ if __name__ == "__main__":
         oCommitter = oComm_prop
                 
         oTag_data = oTag.split()
-
+        oMethod_prop = ""
         if len(oTag_data) == 2:
             oFile = oTag_data[0]
             oMethod = oTag_data[1]
+            for letter in oMethod:
+                if (letter != " ") and (letter != '\n'):
+                    oMethod_prop += letter
+
+            oMethod = oMethod_prop
         else:
             oFile = oTag_data[0]
             oMethod = ""
@@ -709,6 +732,7 @@ if __name__ == "__main__":
         grep_outf = open("grep_outf.txt", 'r')
         grep_outlist = grep_outf.readlines()
 
+        iMethod = ""
         for gLine in grep_outlist:
             grepline_data = gLine.split(',')
             iComm_prop = ""
@@ -721,8 +745,6 @@ if __name__ == "__main__":
             iTag_data = iTag.split()
             if len(iTag_data) == 2:
                 iMethod = iTag_data[1]
-            else:
-                iMethod = ""
 
             # If Committer is not in the list
             log_line =  "File " + oFile + " and Method " + iMethod
@@ -741,12 +763,13 @@ if __name__ == "__main__":
                     
                         # If it also matches a method 
                         # (as long as we have one)
-                        if (oMethod == iMethod) and (oMethod != ""):
+                        if (oMethod == iMethod) and (oMethod != "") and (iMethod != ""):
                             log_line = "Adding method " + oMethod
+                            print my_graph.log(log_line)
                             line_dm = '"' + oCommitter + '","' + iCommitter + '"\n'
                             dm_file.write(line_dm)
             if len(grepline_data) == 4:
-                iMethod = grepline_data[2]  
+                iMethod = grepline_data[2]
 
         # FIXME: To do: Check csv file-format and data
 
