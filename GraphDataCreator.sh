@@ -342,6 +342,7 @@ echo "Starting to create data files -methods and files-"
 
 while read line
 do
+  echo "----------READ LINE ------------+++++" >> imethods.log
   log "$line"
   # Extracting all relevant data
   oRev=$( echo $line | awk -F',' '{print $1}')
@@ -351,17 +352,23 @@ do
   oCommitter=$( echo $line | awk -F',' '{print $3}')
   log "COMMITTER $oCommitter"
 
+  echo "Os-File $oFile and Method $oMethod of Committer $oCommitter"  >> imethods.log
   # Array of committers to avoid repetitions
   arrayCommitters=()
   # Grepping lines with same method
    log "Grepping for $oFile"
+  echo "Grepping for $oFile"   >> imethods.log
   grep $oFile ./outputFile.txt | while read -r gLine
   do
+    echo "----------READ GREP ------------++" >> imethods.log
     iCommitter=$( echo $gLine | awk -F',' '{print $3}')
     iTag=$( echo $gLine | awk -F',' '{print $2}')
     iMethod=$( echo $iTag | awk '{print $2}')
     # If Committer is not in the list
     log "File $oFile and Method $iMethod of Committer $iCommitter"
+    echo "File $oFile and Method $iMethod of Committer $iCommitter"  >> imethods.log
+    
+
     if ! `echo ${arrayCommitters[@]} | grep -q "$iCommitter"` ; then
       # Avoiding links between same committer
       if [[ "$oCommitter" != "$iCommitter" ]]
@@ -380,11 +387,14 @@ do
         fi 
       fi
     fi
+    echo "Gline: $gLine" >> imethods.log
     iMethod=$( echo $gLine | awk '{print $2}')
+    echo "iMethod: $iMethod"  >> imethods.log
+    echo "----------END GREP ------------++" >> imethods.log
   done
   # clear array of Committers
   unset $arrayCommitters
-
+  echo "---------- END READ ------------+++++" >> imethods.log
 done < ./outputFile.txt
 
 mv DataMethods.csv ..
