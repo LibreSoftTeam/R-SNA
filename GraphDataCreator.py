@@ -42,8 +42,8 @@ def help():
     line += "the beginning of times.\n\tFormat: 2012-12-31\r\n\r\n"
     line += "-t\tEnding date of study. When empty, current date will "
     line += "be chosen.\n\tFormat: 2012-12-31\r\n\r\n"
-    line += "-r\tRepository URL. When empty, we assume we are "
-    line += "in a directory tracked by Git. \n\tExample: "
+    line += "-r\tRepository URL. If argument is 'reuse', and there is a "
+    line += "Repository file in directory, reuses that repository\n\tExample: "
     line += "git://git.openstack.org/openstack/swift\r\n"
     line += "\r\n-v\tVerbose mode."
 
@@ -221,8 +221,12 @@ class GraphData:
             print help()
             raise SystemExit
 
-        if (dir_exists("Repository")) or (dir_exists("Data")):
-            raise SystemExit
+        if self.conf_opt['r'] != "reuse":
+            if (dir_exists("Repository")) or (dir_exists("Data")):
+                raise SystemExit
+        else:
+            if dir_exists("Data"):
+                raise SystemExit
 
     def check_options(self):
         """
@@ -248,6 +252,8 @@ class GraphData:
             print "Starting download of Repository"
             to_exe = "git clone " + self.conf_opt['r'] + " Repository"
             os.system(to_exe)
+        elif self.conf_opt['r'] == "reuse":
+            print "Using a previously-downloaded repo"
         else:
             print "No git repo specified!"
             raise SystemExit
@@ -557,8 +563,6 @@ if __name__ == "__main__":
     # Instance of Graph class
     my_graph = GraphData()
 
-    
-
     extract_options(sys.argv, my_graph.conf_opt)
     my_graph.check_program_starting()
     my_graph.create_data_files()
@@ -676,9 +680,11 @@ if __name__ == "__main__":
     print my_graph.log(info)
     go_home_dir()
     my_graph.out_files['output'].close()
+    
     os.chdir(my_graph.DATA_PATH)
     outp_name = my_graph.out_names['output']
     outpfile = open(outp_name, 'r')
+    
     
     outp_lines = outpfile.readlines()
     outpfile.close()  
@@ -686,6 +692,15 @@ if __name__ == "__main__":
     dm_file = open('DataMethods.csv', 'a')
     df_file = open('DataFiles.csv', 'a')
     
+    listCommitters = []
+    handled_files = []
+    handled_revs = []
+    
+    listCommitters = []
+    diccCommitters = {}
+    diccMethods = {}
+    diccTimes = {}
+    diccTimesM = {}
     for oLine in outp_lines:
         # Extracting all relevant data
         
@@ -696,8 +711,13 @@ if __name__ == "__main__":
         oCommitter = oLine_data[2]
         oComm_prop = ""
         for letter in oCommitter:
-            if (letter != " ") and (letter != '\n'):
+            if (letter != '\n'):
                 oComm_prop += letter
+        if oComm_prop[0] == " ":
+            oComm_prop = oComm_prop[1:]
+        if oComm_prop[-1] == " ":
+            oComm_prop = oComm_prop[:-1]
+        
         oCommitter = oComm_prop
                 
         oTag_data = oTag.split()
@@ -713,65 +733,108 @@ if __name__ == "__main__":
         else:
             oFile = oTag_data[0]
             oMethod = ""
-        print "oFile: " + oFile
-        print my_graph.log("Committer: " + oCommitter)
 
-        # Array of committers to avoid repetitions
-        listCommitters = []
-
-        # Grepping lines with same method
-        print my_graph.log("Grepping for " + oFile)
+        method_data = oFile + "," + oMethod
         
-        grep_command = 'grep "' + oFile + '" ' + outp_name
-        print my_graph.log("Grepping for " + oFile)
+        if oCommitter not in listCommitters:
+            listCommitters.append(oCommitter)
+            diccCommitters[oCommitter] = [oFile]
+            diccMethods[oCommitter] = [method_data]
+            diccTimes[oCommitter] = [1]
+            diccTimesM[oCommitter] = [1]
+        else:
+            mod_files = diccCommitters[oCommitter]
+            mod_methods = diccMethods[oCommitter]
+            list_pos = diccTimes[oCommitter]
+            list_posM = diccTimesM[oCommitter]
 
-        status, grep_output = commands.getstatusoutput(grep_command)
-        grep_outf = open("grep_outf.txt", 'w')
-        grep_outf.write(grep_output)
-        grep_outf.close()
-        grep_outf = open("grep_outf.txt", 'r')
-        grep_outlist = grep_outf.readlines()
+            if oFile not in mod_files:
+            
+                mod_files.append(oFile)
+                
+                diccCommitters[oCommitter] = mod_files
 
-        iMethod = ""
-        for gLine in grep_outlist:
-            grepline_data = gLine.split(',')
-            iComm_prop = ""
-            iCommitter = grepline_data[2][:-1]
-            for letter in iCommitter:
-                if (letter != " ") and (letter != '\n'):
-                    iComm_prop += letter
-            iCommitter = iComm_prop
-            iTag = grepline_data[1]
-            iTag_data = iTag.split()
-            if len(iTag_data) == 2:
-                iMethod = iTag_data[1]
+                list_pos.append(1)
+            else:
+                number = mod_files.index(oFile)
+                pos_file = list_pos[number]
+                pos_file += 1      
+                list_pos[number] = pos_file
 
-            # If Committer is not in the list
-            log_line =  "File " + oFile + " and Method " + iMethod
-            log_line += " of Committer " + iCommitter
-            print my_graph.log(log_line)
-            if iCommitter not in listCommitters:
-                if (oCommitter != iCommitter) and ((iCommitter != "") and (oCommitter != "")):
-                    if (oCommitter != " ") and (iCommitter != " "):
-                        # Match
+            if oMethod != "":
+                if (method_data) not in mod_methods:
+                    mod_methods.append(method_data)
+                    diccMethods[oCommitter] = mod_methods
+                    list_posM.append(1)
+                else:
+                    numberM = mod_methods.index(method_data)
+                    pos_fileM = list_posM[numberM]
+                    pos_fileM += 1
+                    list_posM[numberM] = pos_fileM
+                
+                diccTimesM[oCommitter] = list_posM
 
-                        listCommitters.append(iCommitter)
-                        log_line = "Adding file " + oFile
-                        my_graph.log(log_line)
-                        line_df = '"' + oCommitter + '","' + iCommitter + '"\n'
-                        df_file.write(line_df)
-                    
-                        # If it also matches a method 
-                        # (as long as we have one)
-                        if (oMethod == iMethod) and (oMethod != "") and (iMethod != ""):
-                            log_line = "Adding method " + oMethod
-                            print my_graph.log(log_line)
-                            line_dm = '"' + oCommitter + '","' + iCommitter + '"\n'
-                            dm_file.write(line_dm)
-            if len(grepline_data) == 4:
-                iMethod = grepline_data[2]
-
+            diccTimes[oCommitter] = list_pos
+            
         # FIXME: To do: Check csv file-format and data
+
+
+    
+    print "List committers: "
+    print listCommitters
+    
+    oCommit = ""
+
+
+    list_top = []
+    list_topM = []
+
+    for person in listCommitters:
+        list_top.append(diccCommitters[person])
+        list_topM.append(diccMethods[person])
+
+    file_data = []
+    file_dataM = []
+    for person in listCommitters:
+        position = listCommitters.index(person)
+        my_list = list_top[position]
+        for other_list in list_top:
+            if list_top.index(other_list) != position:
+                for chfile in other_list:
+                    if chfile in my_list:
+                        print my_graph.log("Mathing file found: " + chfile)
+                        person2 = listCommitters[list_top.index(other_list)]
+                        print my_graph.log(person + "-->" + person2)
+                        num_list = diccTimes[person]
+                        final_num = num_list[my_list.index(chfile)]
+                        print "Times '" + chfile + "' repeated: " + str(final_num)
+                        df_line = '"' + person + '","' + person2 + '"\n'
+                        file_data.append([final_num, df_line])
+
+    
+    for person in listCommitters:
+        position = listCommitters.index(person)
+        my_listM = list_topM[position]
+        for other_listM in list_topM:
+            if list_topM.index(other_listM) != position:
+                for chmethod in other_listM:
+                    if ((chmethod in my_listM) and (chmethod != "")):
+                        print my_graph.log("Mathing method found: " + chmethod)
+                        person2 = listCommitters[list_topM.index(other_listM)]
+                        print my_graph.log(person + "-->" + person2)
+                        num_listM = diccTimesM[person]
+                        final_numM = num_listM[my_listM.index(chmethod)]
+                        print "Times '" + chmethod + "' repeated: " + str(final_numM)
+                        dm_line = '"' + person + '","' + person2 + '"\n'
+                        file_dataM.append([final_numM, dm_line])
+
+    for line_data in file_data:
+        for i in range(line_data[0]):
+            df_file.write(line_data[1])
+
+    for line_dataM in file_dataM:
+        for j in range(line_dataM[0]):
+            dm_file.write(line_dataM[1])
 
     df_file.close()
     dm_file.close()
