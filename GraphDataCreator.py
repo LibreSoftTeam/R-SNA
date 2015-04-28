@@ -170,9 +170,17 @@ class GraphData:
         self.DATA_PATH = "Data"
         self.OUT_PATH = self.DATA_PATH + '/' + 'output'
         self.CHECKOUT_PATH = self.DATA_PATH + '/' + 'Repository'
+        self.dfiles_name = "DataFiles.csv"
+        self.dmethods_name = "DataMethods.csv"
         self.out_names = {}
         self.out_paths = {}
         self.out_files = {}
+        
+        self.listCommitters = []
+        self.diccCommitters = {}
+        self.diccMethods = {}
+        self.diccTimes = {}
+        self.diccTimesM = {}
 
         self.out_names['commits'] = "CommitsFromScriptFile.txt"
         self.out_names['output'] = "outputFile.txt"
@@ -454,6 +462,233 @@ class GraphData:
         fich.close
         return lines_ok
 
+    def extract_commits_info(self, commit_lines):
+        
+        # Initial asignment for in-loop variables
+        rev = ""
+        author = ""
+        file1 = ""
+        for line in commit_lines_format:
+            if line != "":
+                # Extracting info: commit-id and author
+                print self.log("NEW LINE: " + line)
+                rev_author = self.extract_rev_auth(line)
+                if rev_author[1] == "":
+                    continue
+
+                print self.log("Rev: " + rev_author[0])
+                print self.log("Author: " + rev_author[1])
+                
+                
+                outdiff = self.do_diff(rev_author[0])
+                self.do_checkout(rev_author[0])
+
+                lastFile2 = ""
+                allFiles = self.out_files['allFiles']
+                for grepline in outdiff:
+                   lineNumber1 = ""
+
+                   if grepline[0] != '+' and grepline[0] != '-':
+                    grepline_data = grepline.split()
+                    if (grepline_data[0] == "diff"):
+                        if grepline_data[1] == "--git":
+                            for data in grepline_data:
+                                if (data[0] == 'b') and (data[1] == '/'):
+                                    file1 = data[2:]
+                    elif grepline_data[0] == "@@":
+                        for data in grepline_data:
+                            if data[0] == "+":
+                                num = data.split(',')
+                                lineNumber1 = num[0][1:]
+                    if file1 != "":
+                        print self.log("File: " + file1)
+                        lastFile2 = file1
+                    if lineNumber1 != "":
+                        # When grep is empty, we add a tag ->
+                        # it will be a file-to-file collaboration
+                        print self.log("Line number: " + lineNumber1)
+                        
+                        out1 = self.findFittingTag(lastFile2, lineNumber1,
+                                                       rev_author[0], 
+                                                       rev_author[1])
+
+                # FIXME: This has to be in allFiles.txt also
+
+                print self.log("Tag and committer added to output file")
+                print self.log("Now updating ctags file")
+                ## HERE UPDATING TAGS FILE WITH TAGS OF MODIFIED FILES
+                all_files = self.extract_file_names(outdiff)
+                go_home_dir()
+                os.chdir(self.CHECKOUT_PATH)
+                current_files = os.listdir(os.curdir)
+
+                for fileModifiedTag in all_files:
+                    if fileModifiedTag in current_files:
+                        print self.log("FILE: " + fileModifiedTag)
+                        upd_ctags = "ctags -f " + self.out_names['auxTag']
+                        upd_ctags += " -n " + fileModifiedTag
+                        print self.log("Executing: " + upd_ctags)
+                        os.system(upd_ctags)
+                        # remove comment lines from the just-created tag file
+                        auxTag_nm = self.out_names['auxTag']
+                        lines_ok = self.print_unless("!_TAG_", auxTag_nm)
+                        lines_ok = self.print_unless("/_TAG_", auxTag_nm)
+                        # remove lines of that file in tags file
+                        # adding backslash to scape slash before removing
+                        second = add_backslash(fileModifiedTag)
+                        print self.log("second: " + str(second))
+                        clean_lines = self.print_unless(second, 'tags')
+                        # FIXME: Some log lines not added yet
+                        #add new lines
+                        fich_tags = open('tags', 'a')
+                        for line_ok in lines_ok:
+                            fich_tags.write(line_ok)
+                        fich_tags.close()
+                        info = "Tags added to tags file: now is up to date"
+                        print self.log(info)
+
+    def extract_output_data(self):
+        
+        for oLine in outp_lines:
+            # Extracting all relevant data
+            
+            oLine_data = oLine.split(',')
+            print my_graph.log(str(oLine_data))
+            oRev = oLine_data[0]
+            oTag = oLine_data[1]
+            oCommitter = oLine_data[2]
+            oComm_prop = ""
+            for letter in oCommitter:
+                if (letter != '\n'):
+                    oComm_prop += letter
+            if oComm_prop[0] == " ":
+                oComm_prop = oComm_prop[1:]
+            if oComm_prop[-1] == " ":
+                oComm_prop = oComm_prop[:-1]
+            
+            oCommitter = oComm_prop
+                    
+            oTag_data = oTag.split()
+            oMethod_prop = ""
+            if len(oTag_data) == 2:
+                oFile = oTag_data[0]
+                oMethod = oTag_data[1]
+                for letter in oMethod:
+                    if (letter != " ") and (letter != '\n'):
+                        oMethod_prop += letter
+
+                oMethod = oMethod_prop
+            else:
+                oFile = oTag_data[0]
+                oMethod = ""
+
+            method_data = oFile + "," + oMethod
+            
+            if oCommitter not in my_graph.listCommitters:
+                my_graph.listCommitters.append(oCommitter)
+                my_graph.diccCommitters[oCommitter] = [oFile]
+                my_graph.diccMethods[oCommitter] = [method_data]
+                my_graph.diccTimes[oCommitter] = [1]
+                my_graph.diccTimesM[oCommitter] = [1]
+            else:
+                mod_files = my_graph.diccCommitters[oCommitter]
+                mod_methods = my_graph.diccMethods[oCommitter]
+                list_pos = my_graph.diccTimes[oCommitter]
+                list_posM = my_graph.diccTimesM[oCommitter]
+
+                if oFile not in mod_files:
+                
+                    mod_files.append(oFile)
+                    
+                    my_graph.diccCommitters[oCommitter] = mod_files
+
+                    list_pos.append(1)
+                else:
+                    number = mod_files.index(oFile)
+                    pos_file = list_pos[number]
+                    pos_file += 1      
+                    list_pos[number] = pos_file
+
+                if oMethod != "":
+                    if (method_data) not in mod_methods:
+                        mod_methods.append(method_data)
+                        my_graph.diccMethods[oCommitter] = mod_methods
+                        list_posM.append(1)
+                    else:
+                        numberM = mod_methods.index(method_data)
+                        pos_fileM = list_posM[numberM]
+                        pos_fileM += 1
+                        list_posM[numberM] = pos_fileM
+                    
+                    my_graph.diccTimesM[oCommitter] = list_posM
+
+                my_graph.diccTimes[oCommitter] = list_pos
+
+    def join_files_relations(self, list_top):
+
+        file_data = []
+        for person in self.listCommitters:
+            position = self.listCommitters.index(person)
+            my_list = list_top[position]
+            for other_list in list_top:
+                if list_top.index(other_list) != position:
+                    for chfile in other_list:
+                        if chfile in my_list:
+                            print self.log("Mathing file found: " + chfile)
+                            person2 = self.listCommitters[list_top.index(other_list)]
+                            print self.log(person + "-->" + person2)
+                            num_list = self.diccTimes[person]
+                            final_num = num_list[my_list.index(chfile)]
+                            print "Times '" + chfile + "' repeated: " + str(final_num)
+                            df_line = '"' + person + '","' + person2 + '"\n'
+                            file_data.append([final_num, df_line])
+        return file_data
+
+    def join_methods_relations(self, list_topM):
+
+        file_dataM = []
+        for person in self.listCommitters:
+            position = self.listCommitters.index(person)
+            my_listM = list_topM[position]
+            for other_listM in list_topM:
+                if list_topM.index(other_listM) != position:
+                    for chmethod in other_listM:
+                        if ((chmethod in my_listM) and (chmethod != "")):
+                            print self.log("Mathing method found: " + chmethod)
+                            person2 = self.listCommitters[list_topM.index(other_listM)]
+                            print self.log(person + "-->" + person2)
+                            num_listM = self.diccTimesM[person]
+                            final_numM = num_listM[my_listM.index(chmethod)]
+                            print "Times '" + chmethod + "' repeated: " + str(final_numM)
+                            dm_line = '"' + person + '","' + person2 + '"\n'
+                            file_dataM.append([final_numM, dm_line])
+
+        return file_dataM
+
+    def fill_output_file(self, file_name, data_list):
+
+        file_fill = open(file_name, 'a')
+        for line_data in data_list:
+            for i in range(line_data[0]):
+                file_fill.write(line_data[1])
+        file_fill.close()
+
+    def end_program(self):
+
+        print self.log("Finished: output created:")
+        comm1 = "mv " + self.dmethods_name + " " + self.OUT_PATH[5:]
+        comm2 = "mv " + self.dfiles_name + " " + self.OUT_PATH[5:]
+        print "Executing: " + comm1
+        print "Executing: " + comm2
+        os.system(comm1)
+        os.system(comm2)
+        go_home_dir()
+        
+        print "WARNING: You might be in 'detached HEAD' state."
+        print "You might want to remove Repository directory."
+        print my_graph.log("\r\n - Graph Data Creator End - \r\n")
+
+
     def findFittingTag(self, file_compare, ln_num, rev, author):
 
         """
@@ -553,9 +788,9 @@ class GraphData:
 
             go_home_dir()
 
-        print self.log("|------------ FIND FITTING TAG END ----------|\r\n")
-        print "|------------ FIND FITTING TAG END ----------|\r\n"
-        return 1
+            print self.log("|------------ FIND FITTING TAG END ----------|\r\n")
+            print "|------------ FIND FITTING TAG END ----------|\r\n"
+            return 1
 
 
 if __name__ == "__main__":
@@ -584,269 +819,34 @@ if __name__ == "__main__":
     my_graph.log("Creating tags file: tags")
     my_graph.create_tags_file()
 
-    # From 'archivoDeCommitsDesdeScript.txt' file
-    # get file and line of change,
-    # and then get tag, we have to update
-
     commit_lines_format = " ".join(commit_lines)
     commit_lines_format = commit_lines_format.split("commit ")
-
-    # Initial asignment for in-loop variables
-    rev = ""
-    author = ""
-    file1 = ""
-
-    # FIXME: From here, this has to be divided in smaller functions
-    for line in commit_lines_format:
-        if line != "":
-            # Extracting info: commit-id and author
-            print my_graph.log("NEW LINE: " + line)
-            rev_author = my_graph.extract_rev_auth(line)
-            if rev_author[1] == "":
-                continue
-
-            print my_graph.log("Rev: " + rev_author[0])
-            print my_graph.log("Author: " + rev_author[1])
-            
-            
-            outdiff = my_graph.do_diff(rev_author[0])
-            my_graph.do_checkout(rev_author[0])
-
-            lastFile2 = ""
-            allFiles = my_graph.out_files['allFiles']
-            for grepline in outdiff:
-               lineNumber1 = ""
-
-               if grepline[0] != '+' and grepline[0] != '-':
-                grepline_data = grepline.split()
-                if (grepline_data[0] == "diff"):
-                    if grepline_data[1] == "--git":
-                        for data in grepline_data:
-                            if (data[0] == 'b') and (data[1] == '/'):
-                                file1 = data[2:]
-                elif grepline_data[0] == "@@":
-                    for data in grepline_data:
-                        if data[0] == "+":
-                            num = data.split(',')
-                            lineNumber1 = num[0][1:]
-                if file1 != "":
-                    print my_graph.log("File: " + file1)
-                    lastFile2 = file1
-                if lineNumber1 != "":
-                    # When grep is empty, we add a tag ->
-                    # it will be a file-to-file collaboration
-                    print my_graph.log("Line number: " + lineNumber1)
-                    
-                    out1 = my_graph.findFittingTag(lastFile2, lineNumber1,
-                                                   rev_author[0], 
-                                                   rev_author[1])
-
-            # FIXME: This has to be in allFiles.txt also
-
-            print my_graph.log("Tag and committer added to output file")
-            print my_graph.log("Now updating ctags file")
-            ## HERE UPDATING TAGS FILE WITH TAGS OF MODIFIED FILES
-            all_files = my_graph.extract_file_names(outdiff)
-            go_home_dir()
-            os.chdir(my_graph.CHECKOUT_PATH)
-            current_files = os.listdir(os.curdir)
-
-            for fileModifiedTag in all_files:
-                if fileModifiedTag in current_files:
-                    print my_graph.log("FILE: " + fileModifiedTag)
-                    upd_ctags = "ctags -f " + my_graph.out_names['auxTag']
-                    upd_ctags += " -n " + fileModifiedTag
-                    print my_graph.log("Executing: " + upd_ctags)
-                    os.system(upd_ctags)
-                    # remove comment lines from the just-created tag file
-                    auxTag_nm = my_graph.out_names['auxTag']
-                    lines_ok = my_graph.print_unless("!_TAG_", auxTag_nm)
-                    lines_ok = my_graph.print_unless("/_TAG_", auxTag_nm)
-                    # remove lines of that file in tags file
-                    # adding backslash to scape slash before removing
-                    second = add_backslash(fileModifiedTag)
-                    print my_graph.log("second: " + str(second))
-                    clean_lines = my_graph.print_unless(second, 'tags')
-                    # FIXME: Some log lines not added yet
-                    #add new lines
-                    fich_tags = open('tags', 'a')
-                    for line_ok in lines_ok:
-                        fich_tags.write(line_ok)
-                    fich_tags.close()
-                    info = "Tags added to tags file: now is up to date"
-                    print my_graph.log(info)
-
-    info = "Starting to create data files -methods and files-"
-    print my_graph.log(info)
+    
+    my_graph.extract_commits_info(commit_lines_format)
+    print my_graph.log("Starting to create data files -methods and files-")
     go_home_dir()
     my_graph.out_files['output'].close()
     
     os.chdir(my_graph.DATA_PATH)
     outp_name = my_graph.out_names['output']
     outpfile = open(outp_name, 'r')
-    
-    
+
     outp_lines = outpfile.readlines()
-    outpfile.close()  
+    outpfile.close()
 
-    dm_file = open('DataMethods.csv', 'a')
-    df_file = open('DataFiles.csv', 'a')
-    
-    listCommitters = []
-    handled_files = []
-    handled_revs = []
-    
-    listCommitters = []
-    diccCommitters = {}
-    diccMethods = {}
-    diccTimes = {}
-    diccTimesM = {}
-    for oLine in outp_lines:
-        # Extracting all relevant data
-        
-        oLine_data = oLine.split(',')
-        print my_graph.log(str(oLine_data))
-        oRev = oLine_data[0]
-        oTag = oLine_data[1]
-        oCommitter = oLine_data[2]
-        oComm_prop = ""
-        for letter in oCommitter:
-            if (letter != '\n'):
-                oComm_prop += letter
-        if oComm_prop[0] == " ":
-            oComm_prop = oComm_prop[1:]
-        if oComm_prop[-1] == " ":
-            oComm_prop = oComm_prop[:-1]
-        
-        oCommitter = oComm_prop
-                
-        oTag_data = oTag.split()
-        oMethod_prop = ""
-        if len(oTag_data) == 2:
-            oFile = oTag_data[0]
-            oMethod = oTag_data[1]
-            for letter in oMethod:
-                if (letter != " ") and (letter != '\n'):
-                    oMethod_prop += letter
-
-            oMethod = oMethod_prop
-        else:
-            oFile = oTag_data[0]
-            oMethod = ""
-
-        method_data = oFile + "," + oMethod
-        
-        if oCommitter not in listCommitters:
-            listCommitters.append(oCommitter)
-            diccCommitters[oCommitter] = [oFile]
-            diccMethods[oCommitter] = [method_data]
-            diccTimes[oCommitter] = [1]
-            diccTimesM[oCommitter] = [1]
-        else:
-            mod_files = diccCommitters[oCommitter]
-            mod_methods = diccMethods[oCommitter]
-            list_pos = diccTimes[oCommitter]
-            list_posM = diccTimesM[oCommitter]
-
-            if oFile not in mod_files:
-            
-                mod_files.append(oFile)
-                
-                diccCommitters[oCommitter] = mod_files
-
-                list_pos.append(1)
-            else:
-                number = mod_files.index(oFile)
-                pos_file = list_pos[number]
-                pos_file += 1      
-                list_pos[number] = pos_file
-
-            if oMethod != "":
-                if (method_data) not in mod_methods:
-                    mod_methods.append(method_data)
-                    diccMethods[oCommitter] = mod_methods
-                    list_posM.append(1)
-                else:
-                    numberM = mod_methods.index(method_data)
-                    pos_fileM = list_posM[numberM]
-                    pos_fileM += 1
-                    list_posM[numberM] = pos_fileM
-                
-                diccTimesM[oCommitter] = list_posM
-
-            diccTimes[oCommitter] = list_pos
-            
-        # FIXME: To do: Check csv file-format and data
-
-
-    
-    print "List committers: "
-    print listCommitters
-    
-    oCommit = ""
-
+    my_graph.extract_output_data()
 
     list_top = []
     list_topM = []
 
-    for person in listCommitters:
-        list_top.append(diccCommitters[person])
-        list_topM.append(diccMethods[person])
+    for person in my_graph.listCommitters:
+        list_top.append(my_graph.diccCommitters[person])
+        list_topM.append(my_graph.diccMethods[person])
 
-    file_data = []
-    file_dataM = []
-    for person in listCommitters:
-        position = listCommitters.index(person)
-        my_list = list_top[position]
-        for other_list in list_top:
-            if list_top.index(other_list) != position:
-                for chfile in other_list:
-                    if chfile in my_list:
-                        print my_graph.log("Mathing file found: " + chfile)
-                        person2 = listCommitters[list_top.index(other_list)]
-                        print my_graph.log(person + "-->" + person2)
-                        num_list = diccTimes[person]
-                        final_num = num_list[my_list.index(chfile)]
-                        print "Times '" + chfile + "' repeated: " + str(final_num)
-                        df_line = '"' + person + '","' + person2 + '"\n'
-                        file_data.append([final_num, df_line])
+    file_data = my_graph.join_files_relations(list_top)
+    file_dataM = my_graph.join_methods_relations(list_topM)
 
-    
-    for person in listCommitters:
-        position = listCommitters.index(person)
-        my_listM = list_topM[position]
-        for other_listM in list_topM:
-            if list_topM.index(other_listM) != position:
-                for chmethod in other_listM:
-                    if ((chmethod in my_listM) and (chmethod != "")):
-                        print my_graph.log("Mathing method found: " + chmethod)
-                        person2 = listCommitters[list_topM.index(other_listM)]
-                        print my_graph.log(person + "-->" + person2)
-                        num_listM = diccTimesM[person]
-                        final_numM = num_listM[my_listM.index(chmethod)]
-                        print "Times '" + chmethod + "' repeated: " + str(final_numM)
-                        dm_line = '"' + person + '","' + person2 + '"\n'
-                        file_dataM.append([final_numM, dm_line])
+    my_graph.fill_output_file(my_graph.dfiles_name, file_data)
+    my_graph.fill_output_file(my_graph.dmethods_name, file_dataM)
 
-    for line_data in file_data:
-        for i in range(line_data[0]):
-            df_file.write(line_data[1])
-
-    for line_dataM in file_dataM:
-        for j in range(line_dataM[0]):
-            dm_file.write(line_dataM[1])
-
-    df_file.close()
-    dm_file.close()
-    print my_graph.log("Finished: output created:")
-    comm1 = "mv DataMethods.csv " + my_graph.OUT_PATH[5:]
-    comm2 = "mv DataFiles.csv " + my_graph.OUT_PATH[5:]
-    print "Executing: " + comm1
-    print "Executing: " + comm2
-    os.system(comm1)
-    os.system(comm2)
-    go_home_dir()
-    
-    print "WARNING: You might be in 'detached HEAD' state."
-    print "You might want to remove Repository directory."
-    print my_graph.log("\r\n - Graph Data Creator End - \r\n")
+    my_graph.end_program()
