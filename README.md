@@ -4,7 +4,7 @@ Social Network Analysis software Shell(bash)-to-Python translation, from Christi
 Note: This program uses Git and Ctags, please install both programs before running GraphDataCreator
 
 Usage:
-$python GraphDataCreator.py -f <starting-date of study[1]> -t <ending date of study[2]> -r <url-repo>/<reuse[3]>
+$python GraphDataCreator.py -f (starting-date of study[1]) -t (ending date of study[2]) -r (url-repo)/(reuse[3])
 
 [1],[2] Starting and ending date of study format: YYYY-MM-DD
 [1] When starting date is empty, study starts at the beginning of times.
