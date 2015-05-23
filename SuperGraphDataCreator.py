@@ -4,9 +4,11 @@
 # Date range to periods calculator ; 2015, LibreSoft
 
 """
-For a given period of time (two dates), the program calculates using this 
-time lapse resulting 6-month periods (if there are enough months for that) 
-and one additional period to complete the given data range if necessary.
+Super-script to control GraphDataCreator, specially when study covers wide 
+periods of time.
+Executes the main script depending on time periods, calculated according
+a given value in configuration file. (Default: 6 months periods) and
+organizes final data using a folder for each period.
 """
 
 #TODO: Export resulting methods in a CSV file
@@ -49,6 +51,10 @@ def check_date(date, date_type):
     return result
 
 def datetime_range(start, end, num):
+    """
+    For a given period of time (two dates), the function calculates using this 
+    time lapse resulting monthly periods.
+    """
     start_secs = (start - datetime(1970, 1, 1)).total_seconds()
     end_secs = (end - datetime(1970, 1, 1)).total_seconds()
     dates = [datetime.fromtimestamp(el) 
@@ -58,6 +64,9 @@ def datetime_range(start, end, num):
     return zip(dates, dates[1:])
 
 def MonthsBetweenDates(BeginDate, EndDate):
+    """
+    Calculates how many months there are between two dates
+    """
     firstyearmonths = [mn for mn in range(BeginDate.month, 13)]
     lastyearmonths = [mn for mn in range(1, EndDate.month+1)]
     months = [mn for mn in range(1, 13)]
