@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: iso-8859-15 -*-
 
-# Date range to periods calculator ; 2015, LibreSoft
+# Super-script for GraphDataCreator ; 2015, LibreSoft
 
 """
 Super-script to control GraphDataCreator, specially when study covers wide 
