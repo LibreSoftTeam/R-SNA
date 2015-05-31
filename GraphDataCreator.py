@@ -5,6 +5,9 @@ GraphDataCreator Shell(bash)-to-Pyhton translation from Christian Ramiro code
 Miguel Angel Fernandez Sanchez
 """
 
+
+#TODO Implement -s option (program lauched from a super-script, no questions)
+
 import os
 import sys
 from time import strftime, gmtime
@@ -114,12 +117,15 @@ def extract_options(list_opt, dicc_opt):
                 dicc_opt['t'] = str(value_tmp[1])
             elif value_tmp[0] == "r":
                 dicc_opt['r'] = str(value_tmp[1])
+            
         else:
             if value == 'v':
                 dicc_opt['v'] = True
             elif value == 'h':
                 dicc_opt['h'] = True
-
+            elif value_tmp[0] == "s":
+                dicc_opt['s'] = True
+                print "We are under Super-script"
 
 def dir_exists(directory):
     """
@@ -196,6 +202,7 @@ class GraphData:
         self.conf_opt['t'] = self.date_now  # Ending date opt. (-t)
         self.conf_opt['r'] = ""  # Repository URL option (-r)
         self.conf_opt['h'] = False  # Show help option (-h)
+        self.conf_opt['s'] = False  # Super-script option
 
         self.fichtag = open('fichtag.log', 'w')
         self.fichtag.close()
@@ -229,12 +236,24 @@ class GraphData:
             print help()
             raise SystemExit
 
-        if self.conf_opt['r'] != "reuse":
-            if (dir_exists("Repository")) or (dir_exists("Data")):
-                raise SystemExit
+        if not self.conf_opt['s']:
+            if self.conf_opt['r'] != "reuse":
+                if (dir_exists("Repository")) or (dir_exists("Data")):
+                    raise SystemExit
+            else:
+                if dir_exists("Data"):
+                    raise SystemExit
         else:
-            if dir_exists("Data"):
-                raise SystemExit
+            directory1 = "Data"
+            directory2 = "Repository"
+            if os.path.exists(directory1):
+                print "Removing directory: " + directory1
+                shutil.rmtree(directory1, ignore_errors=True)
+
+            if self.conf_opt['r'] != "reuse":
+                print "Removing directory: " + directory2
+                shutil.rmtree(directory2, ignore_errors=True)
+            
 
     def check_options(self):
         """
