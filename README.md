@@ -1,7 +1,9 @@
 # R-SNA - LibreSoft
 
-Social Network Analysis software Shell(bash)-to-Python translation, from Christian Coré Ramiro code.
+Social Network Analysis for software projects at different levels of granularity.
+GraphDataCreator.py is based on Christian Coré Ramiro Shell-Bash script.
 Note: This program uses Git and Ctags, please install both programs before running GraphDataCreator
+Note 2: A new Super-script has been added to handle wide time-periods, 'SuperGraphDataCreator.py' that divides that time period into shorter periods.
 
 Usage:
 $python GraphDataCreator.py -f (starting-date of study[1]) -t (ending date of study[2]) -r (url-repo)/(reuse[3])
@@ -24,3 +26,18 @@ Other options:
 
   -h  prints help page.
   -v  Verbose mode.
+
+
+Usage for SuperGraphDataCreator.py:
+$python SuperGraphDataCreator.py
+-This program uses a configuration file named 'graph_settings.py' ,included in this repo, which has to be in the same folder that SuperGraphDataCreator.py and GraphDataCreator.py
+-Its output is one folder named 'final-outputs' and in this folder creates one sub-folder for each period
+
+Example of configuration file:
+config = {}
+config['v'] = True  # Verbose
+config['f'] = '2005-06-01'  # Starting date of study
+config['t'] = '2011-11-18'  # Ending date of study
+config['r'] = "https://github.com/GNOME/gedit"  # Repository URL
+config['h'] = False  # Shows help
+config['p'] = 8  # Months by period
