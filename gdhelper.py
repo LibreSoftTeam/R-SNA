@@ -12,9 +12,9 @@ in <node1,node2,weight> format.
 
 When -n option is activated, node1 and node2 which are names (strings)
 are converted into integer numbers (A different integer is assigned to each
-name found.
+name found).
 
-Output: A file which name is specified by command-line
+Output: A file whose name is specified by command-line
 when the program is executed.
 
 """
