@@ -16,6 +16,7 @@ import matplotlib.pyplot as plt
 
 usage = "python net.py <input_graph.csv>"
 
+
 class GN:
     """
     Main class
@@ -34,7 +35,7 @@ class GN:
         self.count = 0
         self.tri_format = False
         self.g = nx.Graph()
-    
+
     def check_startup(self):
         """
         Checks if the program can run properly with the given arguments
@@ -49,41 +50,42 @@ class GN:
                 node_file = open(filename, 'r')
                 self.lines_node = node_file.readlines()
                 node_file.close()
-            except IOError: 
+            except IOError:
                 print "Check input file"
                 print usage
                 raise SystemExit
 
     def my_draw(self, g):
         """
-        Draws a given graph with many specified options 
+        Draws a given graph with many specified options
         """
-        elarge=[(u,v) for (u,v,d) in g.edges(data=True) if d['weight'] >0.5]
-        esmall=[(u,v) for (u,v,d) in g.edges(data=True) if d['weight'] <=0.5]
+        elarg = [(u, v) for (u, v, d)
+                 in g.edges(data=True) if d['weight'] > 0.5]
+        esmall = [(u, v) for (u, v, d)
+                  in g.edges(data=True) if d['weight'] <= 0.5]
 
-        pos=nx.nx.spring_layout(g) # positions for all nodes
+        pos = nx.nx.spring_layout(g)  # positions for all nodes
 
         # nodes
-        nx.draw_networkx_nodes(g,pos,node_size=700)
+        nx.draw_networkx_nodes(g, pos, node_size=700)
 
         # edges
-        nx.draw_networkx_edges(g,pos,edgelist=elarge,
-                            width=6)
-        nx.draw_networkx_edges(g,pos,edgelist=esmall,
-                            width=6,alpha=0.5,edge_color='b',style='dashed')
+        nx.draw_networkx_edges(g, pos, edgelist=elarg,
+                               width=6)
+        nx.draw_networkx_edges(g, pos, edgelist=esmall,
+                               width=6, alpha=0.5, edge_color='b',
+                               style='dashed')
 
         # labels
-        nx.draw_networkx_labels(g,pos,font_size=20,font_family='sans-serif')
+        nx.draw_networkx_labels(g, pos, font_size=20, font_family='sans-serif')
 
         plt.axis('off')
-        #plt.savefig("weighted_graph.png") # save as png
-        plt.show() # display
-    
-
+        # plt.savefig("weighted_graph.png") # save as png
+        plt.show()  # display
 
     def build_graph(self):
         """
-        Builds a graph from a given CSV file, looking first at the kind of 
+        Builds a graph from a given CSV file, looking first at the kind of
         graph (If it is weighed o not)
         """
 
@@ -99,7 +101,7 @@ class GN:
                 self.temp_counter = self.viewed_lines[node]
                 self.temp_counter += 1
                 self.viewed_lines[node] = self.temp_counter
-             
+
             nodes = node.split(",")
             node1 = nodes[0]
             node2 = nodes[1]
@@ -117,7 +119,6 @@ class GN:
                 self.counter += 1
                 self.dicc_nodes[node2] = self.counter
 
-
         g = nx.Graph()
 
         list_nodes = self.dicc_nodes.keys()
@@ -133,8 +134,6 @@ class GN:
 
         return g
 
-
-
     def graphic_girvan_newman(self, g):
         """
         Main algorithm that iterates in the builded graph and plotting
@@ -147,7 +146,6 @@ class GN:
             print nx.number_of_edges(copyg)
             new_g = nx.edge_betweenness(copyg)
             dicc2 = {}
-            
             list_g = []
             for edge in new_g.keys():
                 num = str(new_g[edge])
@@ -158,12 +156,12 @@ class GN:
                 newnum = str(num_list[0]) + "." + str(num2)
                 dicc2[edge] = float(newnum)
                 list_g.append(dicc2[edge])
-                
+
             maxvalue = 0.0
             for value in list_g:
                 if float(value) > float(maxvalue):
                     maxvalue = float(value)
-                    
+
             maxedge = ""
             for edge in dicc2.keys():
                 if (dicc2[edge] == maxvalue):
@@ -171,7 +169,7 @@ class GN:
             print maxedge
             node1 = maxedge[0]
             node2 = maxedge[1]
-            copyg.remove_edge(*maxedge) # Unpacks edge tuple
+            copyg.remove_edge(*maxedge)  # Unpacks edge tuple
             self.my_draw(copyg)
 
 
