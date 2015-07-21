@@ -127,7 +127,7 @@ class GN:
                 self.dicc_nodes[node2] = self.counter
 
         g = nx.Graph()
-        
+
         list_nodes = self.dicc_nodes.keys()
 
         for node in self.viewed_lines.keys():
@@ -137,7 +137,8 @@ class GN:
             if self.tri_format:
                 g.add_edge(node1, node2, weight=float(nodes[2]))
             else:
-                g.add_edge(node1, node2[:-1], weight=float(self.viewed_lines[node]))
+                g.add_edge(node1, node2[:-1],
+                           weight=float(self.viewed_lines[node]))
 
         return g
 
@@ -183,9 +184,9 @@ class GN:
             # Removing maximum edge to recalculate the same in next iteration
             copyg.remove_edge(*maxedge)  # Unpacks edge tuple
 
-            # Plot graph in each iteration            
+            # Plot graph in each iteration
             self.my_draw(copyg)
-            
+
     def virtual_girvan_newman(self, g):
         """
         Main algorithm that iterates in the builded graph and creates
@@ -200,7 +201,7 @@ class GN:
             new_g = nx.edge_betweenness(copyg)
             dicc2 = {}
             list_g = []
-            
+
             for edge in new_g.keys():
                 # Cut the float value of centrality
                 # (Error raises when the value has more than 12 ciphers)
@@ -229,7 +230,7 @@ class GN:
             node2 = maxedge[1]
             # Removing maximum edge to recalculate the same in next iteration
             copyg.remove_edge(*maxedge)  # Unpacks edge tuple
-            
+
             # Forming the resulting tree
             # Should add a virtual node with main nodes connected to it?
             # Yes, unless both nodes have been handled
@@ -250,7 +251,7 @@ class GN:
                     self.dicc_main_nodes[node2] = self.vn_counter
                     self.dicc_copynodes[node2].append(self.vn_counter)
                 self.created_vnodes.append([str(self.vn_counter), False])
-                    
+
                 if node1 not in self.dicc_main_nodes.keys():
                     self.dicc_main_nodes[node1] = self.vn_counter
                     self.dicc_copynodes[node1] = [self.vn_counter]
@@ -260,9 +261,7 @@ class GN:
                     self.list_vnodes.append([self.vn_counter, last_vnode])
                     self.dicc_main_nodes[node1] = self.vn_counter
                     self.dicc_copynodes[node1].append([self.vn_counter, True])
-        
 
-    
     def build_output(self):
         """
         Builds resulting graph in two ways:
@@ -276,7 +275,7 @@ class GN:
             gn_final.add_edge(node1, node2, weight=float(1))
             line = node1 + ',' + node2 + '\r\n'
             self.data_final.write(line)
-            
+
         for node in self.list_vnodes:
             node1 = str(node[1])
             node2 = str(node[0])
@@ -287,8 +286,6 @@ class GN:
         print "\r\nCreated output graph (gn-out.csv)\r\n"
         self.data_final.close()
 
-
-
 if __name__ == "__main__":
 
     print "Starting 'girvan-newman.py'..."
@@ -298,5 +295,4 @@ if __name__ == "__main__":
     my_gn.my_draw(my_gn.g)
     my_gn.virtual_girvan_newman(my_gn.g)
     my_gn.build_output()
-    
     print "End of 'girvan-newman.py'"
