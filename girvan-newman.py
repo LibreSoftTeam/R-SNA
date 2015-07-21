@@ -28,13 +28,20 @@ class GN:
         """
         self.dicc_nodes = {}
         self.viewed_lines = {}
-        self.data_final = open('info-out.csv', 'w')
+        self.data_final = open('gn-out.csv', 'w')
         self.data_final.close()
-        self.data_final = open('info-out.csv', 'a')
+        self.data_final = open('gn-out.csv', 'a')
         self.temp_counter = 0
         self.count = 0
         self.tri_format = False
         self.g = nx.Graph()
+        self.vn_counter = 0
+        self.list_vnodes = []
+        self.created_vnodes = []
+        self.dicc_main_nodes = {}
+        self.dicc_copynodes = {}
+        self.handled_nodes = []
+        self.final_viewed = []
 
     def check_startup(self):
         """
@@ -91,7 +98,7 @@ class GN:
 
         ex_line = self.lines_node[0].split(',')
         if len(ex_line) == 3:
-            tri_format = True
+            self.tri_format = True
 
         for node in self.lines_node:
 
@@ -120,17 +127,17 @@ class GN:
                 self.dicc_nodes[node2] = self.counter
 
         g = nx.Graph()
-
+        
         list_nodes = self.dicc_nodes.keys()
 
         for node in self.viewed_lines.keys():
             nodes = node.split(",")
             node1 = nodes[0]
             node2 = nodes[1]
-            if tri_format:
+            if self.tri_format:
                 g.add_edge(node1, node2, weight=float(nodes[2]))
             else:
-                g.add_edge(node1, node2[:-1], weight=float(viewed_lines[node]))
+                g.add_edge(node1, node2[:-1], weight=float(self.viewed_lines[node]))
 
         return g
 
@@ -142,11 +149,14 @@ class GN:
         copyg = g
         dicc2 = {}
         num = 0
+        # Girvan-Newman iteration
         while nx.number_of_edges(copyg) > 0:
             print nx.number_of_edges(copyg)
             new_g = nx.edge_betweenness(copyg)
             dicc2 = {}
             list_g = []
+            # Cut the float value of centrality
+            # (Error raises when the value has more than 12 ciphers)
             for edge in new_g.keys():
                 num = str(new_g[edge])
                 num_list = num.split(".")
@@ -158,6 +168,7 @@ class GN:
                 list_g.append(dicc2[edge])
 
             maxvalue = 0.0
+            # Looking for the most important edge in current network
             for value in list_g:
                 if float(value) > float(maxvalue):
                     maxvalue = float(value)
@@ -169,8 +180,113 @@ class GN:
             print maxedge
             node1 = maxedge[0]
             node2 = maxedge[1]
+            # Removing maximum edge to recalculate the same in next iteration
             copyg.remove_edge(*maxedge)  # Unpacks edge tuple
+
+            # Plot graph in each iteration            
             self.my_draw(copyg)
+            
+    def virtual_girvan_newman(self, g):
+        """
+        Main algorithm that iterates in the builded graph and creates
+        a tree using virtual nodes to connect the main nodes
+        """
+        copyg = g
+        dicc2 = {}
+        num = 0
+        # Girvan-Newman iteration
+        while nx.number_of_edges(copyg) > 0:
+            print nx.number_of_edges(copyg)
+            new_g = nx.edge_betweenness(copyg)
+            dicc2 = {}
+            list_g = []
+            
+            for edge in new_g.keys():
+                # Cut the float value of centrality
+                # (Error raises when the value has more than 12 ciphers)
+                num = str(new_g[edge])
+                num_list = num.split(".")
+                num2 = num_list[1]
+                if len(num2) > 12:
+                    num2 = num2[:11]
+                newnum = str(num_list[0]) + "." + str(num2)
+                dicc2[edge] = float(newnum)
+                list_g.append(dicc2[edge])
+
+            maxvalue = 0.0
+            # Looking for the most important edge in current network
+            for value in list_g:
+                if float(value) > float(maxvalue):
+                    maxvalue = float(value)
+
+            maxedge = ""
+            for edge in dicc2.keys():
+                if (dicc2[edge] == maxvalue):
+                    maxedge = edge
+            print maxedge
+            # Identifying nodes that forms the found edge
+            node1 = maxedge[0]
+            node2 = maxedge[1]
+            # Removing maximum edge to recalculate the same in next iteration
+            copyg.remove_edge(*maxedge)  # Unpacks edge tuple
+            
+            # Forming the resulting tree
+            # Should add a virtual node with main nodes connected to it?
+            # Yes, unless both nodes have been handled
+            node1_in = node1 in self.handled_nodes
+            node2_in = node2 in self.handled_nodes
+            if (node1_in and node2_in):
+                print "Both nodes have been already handled"
+            else:
+                self.vn_counter += 1
+                last_vnode = 0
+                if node2 not in self.dicc_main_nodes.keys():
+                    self.dicc_main_nodes[node2] = self.vn_counter
+                    self.dicc_copynodes[node2] = [self.vn_counter]
+                    self.handled_nodes.append(node2)
+                else:
+                    last_vnode = self.dicc_main_nodes[node2]
+                    self.list_vnodes.append([self.vn_counter, last_vnode])
+                    self.dicc_main_nodes[node2] = self.vn_counter
+                    self.dicc_copynodes[node2].append(self.vn_counter)
+                self.created_vnodes.append([str(self.vn_counter), False])
+                    
+                if node1 not in self.dicc_main_nodes.keys():
+                    self.dicc_main_nodes[node1] = self.vn_counter
+                    self.dicc_copynodes[node1] = [self.vn_counter]
+                    self.handled_nodes.append(node1)
+                else:
+                    last_vnode = self.dicc_main_nodes[node1]
+                    self.list_vnodes.append([self.vn_counter, last_vnode])
+                    self.dicc_main_nodes[node1] = self.vn_counter
+                    self.dicc_copynodes[node1].append([self.vn_counter, True])
+        
+
+    
+    def build_output(self):
+        """
+        Builds resulting graph in two ways:
+           - Graph mode (Adding edges)
+           - CSV file
+        """
+        gn_final = nx.Graph()
+        for node in self.dicc_main_nodes.keys():
+            node1 = str(self.dicc_main_nodes[node])
+            node2 = str(node)
+            gn_final.add_edge(node1, node2, weight=float(1))
+            line = node1 + ',' + node2 + '\r\n'
+            self.data_final.write(line)
+            
+        for node in self.list_vnodes:
+            node1 = str(node[1])
+            node2 = str(node[0])
+            gn_final.add_edge(node1, node2, weight=float(1))
+            line = node1 + ',' + node2 + '\r\n'
+            self.data_final.write(line)
+
+        print "\r\nCreated output graph (gn-out.csv)\r\n"
+        self.data_final.close()
+
 
 
 if __name__ == "__main__":
@@ -180,6 +296,7 @@ if __name__ == "__main__":
     my_gn.check_startup()
     my_gn.g = my_gn.build_graph()
     my_gn.my_draw(my_gn.g)
-    my_gn.graphic_girvan_newman(my_gn.g)
-    my_gn.data_final.close()
+    my_gn.virtual_girvan_newman(my_gn.g)
+    my_gn.build_output()
+    
     print "End of 'girvan-newman.py'"
