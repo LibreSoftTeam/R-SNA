@@ -39,7 +39,6 @@ class GN:
         self.list_vnodes = []
         self.created_vnodes = []
         self.dicc_main_nodes = {}
-        self.dicc_copynodes = {}
         self.handled_nodes = []
         self.final_viewed = []
 
@@ -242,35 +241,34 @@ class GN:
                 self.vn_counter += 1
                 last_vnode = 0
                 vnode = 'vn' + str(self.vn_counter)
+                # If both nodes have not been handled and aren't
+                # the first ones, it's a new branch connected to
+                # virtual node 1 (vn1)
                 if (not node1_in and not node2_in):
                     if self.vn_counter != 1:
                         self.list_vnodes.append([vnode, 'vn1'])
 
                 if node2 not in self.dicc_main_nodes.keys():
                     self.dicc_main_nodes[node2] = vnode
-                    self.dicc_copynodes[node2] = [vnode]
                     self.handled_nodes.append(node2)
                 else:
                     last_vnode = self.dicc_main_nodes[node2]
                     self.list_vnodes.append([vnode, last_vnode])
                     self.dicc_main_nodes[node2] = vnode
-                    self.dicc_copynodes[node2].append(vnode)
 
                 self.created_vnodes.append([vnode, False])
 
                 if node1 not in self.dicc_main_nodes.keys():
                     self.dicc_main_nodes[node1] = vnode
-                    self.dicc_copynodes[node1] = [vnode]
                     self.handled_nodes.append(node1)
                 else:
                     last_vnode = self.dicc_main_nodes[node1]
                     self.list_vnodes.append([vnode, last_vnode])
                     self.dicc_main_nodes[node1] = vnode
-                    self.dicc_copynodes[node1].append([vnode, True])
 
     def build_output(self):
         """
-        Builds resulting graph in two ways:
+        Builds resulting tree-like graph in two ways:
            - Graph mode (Adding edges)
            - CSV file
         """
