@@ -241,26 +241,32 @@ class GN:
             else:
                 self.vn_counter += 1
                 last_vnode = 0
+                vnode = 'vn' + str(self.vn_counter)
+                if (not node1_in and not node2_in):
+                    if self.vn_counter != 1:
+                        self.list_vnodes.append([vnode, 'vn1'])
+
                 if node2 not in self.dicc_main_nodes.keys():
-                    self.dicc_main_nodes[node2] = self.vn_counter
-                    self.dicc_copynodes[node2] = [self.vn_counter]
+                    self.dicc_main_nodes[node2] = vnode
+                    self.dicc_copynodes[node2] = [vnode]
                     self.handled_nodes.append(node2)
                 else:
                     last_vnode = self.dicc_main_nodes[node2]
-                    self.list_vnodes.append([self.vn_counter, last_vnode])
-                    self.dicc_main_nodes[node2] = self.vn_counter
-                    self.dicc_copynodes[node2].append(self.vn_counter)
-                self.created_vnodes.append([str(self.vn_counter), False])
+                    self.list_vnodes.append([vnode, last_vnode])
+                    self.dicc_main_nodes[node2] = vnode
+                    self.dicc_copynodes[node2].append(vnode)
+
+                self.created_vnodes.append([vnode, False])
 
                 if node1 not in self.dicc_main_nodes.keys():
-                    self.dicc_main_nodes[node1] = self.vn_counter
-                    self.dicc_copynodes[node1] = [self.vn_counter]
+                    self.dicc_main_nodes[node1] = vnode
+                    self.dicc_copynodes[node1] = [vnode]
                     self.handled_nodes.append(node1)
                 else:
                     last_vnode = self.dicc_main_nodes[node1]
-                    self.list_vnodes.append([self.vn_counter, last_vnode])
-                    self.dicc_main_nodes[node1] = self.vn_counter
-                    self.dicc_copynodes[node1].append([self.vn_counter, True])
+                    self.list_vnodes.append([vnode, last_vnode])
+                    self.dicc_main_nodes[node1] = vnode
+                    self.dicc_copynodes[node1].append([vnode, True])
 
     def build_output(self):
         """
