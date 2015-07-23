@@ -289,6 +289,7 @@ class GN:
 
         print "\r\nCreated output graph (gn-out.csv)\r\n"
         self.data_final.close()
+        self.my_draw(gn_final)
 
 if __name__ == "__main__":
 
